@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "税案通报大数据分析",
+    "navigationBarBackgroundColor": "#1a1a2e",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f0f2f5"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
