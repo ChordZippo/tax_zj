@@ -76,7 +76,7 @@ Page({
   // ---- 年度 ---- 
   _drawYearly: function(cb) {
     try {
-      var ctx = wx.createCanvasContext('chartYearly');
+      var ctx = wx.createCanvasContext('chartYearly', this);
       var data = [15, 623, 102, 44, 189, 130];
       var labels = ['2021','2022','2023','2024','2025','2026'];
       var w = this.chartW, h = this.chartH, maxV = 700;
@@ -104,7 +104,7 @@ Page({
   // ---- 月度 ----
   _drawMonthly: function(cb) {
     try {
-      var ctx = wx.createCanvasContext('chartMonthly');
+      var ctx = wx.createCanvasContext('chartMonthly', this);
       var d = [{ym:'22-05',c:162},{ym:'22-06',c:250},{ym:'22-07',c:133},{ym:'22-08',c:40},{ym:'22-09',c:9},{ym:'23-01',c:11},{ym:'23-02',c:4},{ym:'23-03',c:7},{ym:'23-04',c:13},{ym:'23-05',c:8},{ym:'23-06',c:12},{ym:'23-07',c:12},{ym:'23-08',c:4},{ym:'23-09',c:19},{ym:'23-10',c:7},{ym:'23-11',c:5},{ym:'24-01',c:7},{ym:'24-02',c:6},{ym:'24-04',c:5},{ym:'24-05',c:6},{ym:'24-10',c:6},{ym:'24-11',c:8},{ym:'24-12',c:6},{ym:'25-01',c:8},{ym:'25-02',c:8},{ym:'25-04',c:20},{ym:'25-05',c:8},{ym:'25-06',c:10},{ym:'25-07',c:20},{ym:'25-08',c:12},{ym:'25-09',c:28},{ym:'25-10',c:8},{ym:'25-11',c:46},{ym:'25-12',c:18},{ym:'26-01',c:20},{ym:'26-02',c:20},{ym:'26-04',c:57},{ym:'26-05',c:20},{ym:'26-06',c:13}];
       var w = this.chartW, h = this.chartH, maxV = 280;
       var padL = 40, padR = 10, padT = 25, padB = 35;
@@ -131,7 +131,7 @@ Page({
   // ---- 每日 ----
   _drawDay: function(cb) {
     try {
-      var ctx = wx.createCanvasContext('chartDay');
+      var ctx = wx.createCanvasContext('chartDay', this);
       var data = [40,15,12,41,34,31,21,30,29,35,17,22,25,30,49,41,69,31,43,23,22,49,23,22,46,71,43,80,41,40,28];
       var w = this.chartW, h = this.chartH, maxV = 90;
       var padL = 40, padR = 10, padT = 25, padB = 35;
@@ -158,7 +158,7 @@ Page({
   // ---- 环形图 ----
   _drawType: function(cb) {
     try {
-      var ctx = wx.createCanvasContext('chartType');
+      var ctx = wx.createCanvasContext('chartType', this);
       var C = ['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA8BC3'];
       var d = [{t:'骗享优惠',c:595},{t:'虚开发票',c:114},{t:'网络主播',c:56},{t:'涉税中介',c:54},{t:'一般偷税',c:48},{t:'骗取出口退税',c:46},{t:'私户收款',c:38}];
       var total = 0;
@@ -207,7 +207,7 @@ Page({
   // ---- 省份 ----
   _drawProvince: function(cb) {
     try {
-      var ctx = wx.createCanvasContext('chartProvince');
+      var ctx = wx.createCanvasContext('chartProvince', this);
       var d = [{p:'广东',c:60},{p:'辽宁',c:57},{p:'浙江',c:55},{p:'福建',c:53},{p:'山东',c:40},{p:'四川',c:38},{p:'青海',c:37},{p:'贵州',c:37},{p:'重庆',c:34},{p:'安徽',c:33}];
       d.reverse();
       var C = ['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA8BC3','#8C8C8C','#4C72B0','#DD8452'];
@@ -240,7 +240,7 @@ Page({
   // ---- 关键词 ----
   _drawKeyword: function(cb) {
     try {
-      var ctx = wx.createCanvasContext('chartKeyword');
+      var ctx = wx.createCanvasContext('chartKeyword', this);
       var d = [{k:'骗取留抵退税',c:595},{k:'虚开发票',c:114},{k:'涉税中介',c:53},{k:'主播',c:45},{k:'出口退税',c:40},{k:'隐匿收入',c:34},{k:'加油站',c:32},{k:'私户收款',c:31},{k:'个税',c:28},{k:'消费税',c:20}];
       d.reverse();
       var w = this.chartW, h = this.chartH + 30;
