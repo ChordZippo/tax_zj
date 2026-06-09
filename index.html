@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税案通报大数据仪表盘</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1"></script>
+    <style>
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --bg-header: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --text-primary: #1a1a2e;
+            --text-secondary: #6c757d;
+            --text-on-dark: #ffffff;
+            --color-1: #4C72B0;
+            --color-2: #DD8452;
+            --color-3: #55A868;
+            --color-4: #C44E52;
+            --color-5: #8172B3;
+            --color-6: #937860;
+            --color-7: #DA8BC3;
+            --color-8: #8C8C8C;
+            --positive: #28a745;
+            --negative: #dc3545;
+            --gap: 16px;
+            --radius: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        .dashboard-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: var(--gap);
+        }
+        .dashboard-header {
+            background: var(--bg-header);
+            color: var(--text-on-dark);
+            padding: 24px 28px;
+            border-radius: var(--radius);
+            margin-bottom: var(--gap);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .dashboard-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dashboard-header h1 span { font-size: 14px; font-weight: 400; opacity: 0.7; }
+        .subtitle { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+        .filters {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .filter-group label { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .filter-group select {
+            padding: 6px 10px;
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 5px;
+            background: rgba(255,255,255,0.12);
+            color: var(--text-on-dark);
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .filter-group select option { background: #1a1a2e; color: #fff; }
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--gap);
+            margin-bottom: var(--gap);
+        }
+        .kpi-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 18px 22px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--color-1);
+            transition: transform 0.15s;
+        }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .kpi-card:nth-child(1) { border-left-color: var(--color-1); }
+        .kpi-card:nth-child(2) { border-left-color: var(--color-3); }
+        .kpi-card:nth-child(3) { border-left-color: var(--color-2); }
+        .kpi-card:nth-child(4) { border-left-color: var(--color-4); }
+        .kpi-card:nth-child(5) { border-left-color: var(--color-5); }
+        .kpi-card:nth-child(6) { border-left-color: var(--color-6); }
+        .kpi-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+        .kpi-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .kpi-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .chart-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: var(--gap);
+            margin-bottom: var(--gap);
+        }
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .chart-container h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chart-container h3 .badge {
+            font-size: 11px;
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        .chart-container canvas { max-height: 300px; width: 100% !important; }
+        .table-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            margin-bottom: var(--gap);
+            overflow-x: auto;
+        }
+        .table-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .data-table thead th {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid #dee2e6;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+        .data-table thead th:hover { color: var(--text-primary); background: #f8f9fa; }
+        .data-table tbody td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; }
+        .data-table tbody tr:hover { background: #f8f9fa; }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .tag-blue { background: #e8f0fe; color: #1967d2; }
+        .tag-red { background: #fce8e6; color: #d93025; }
+        .tag-green { background: #e6f4ea; color: #137333; }
+        .tag-orange { background: #fef7e0; color: #e37400; }
+        .tag-purple { background: #f3e8fd; color: #7b1fa2; }
+        .tag-gray { background: #f1f3f4; color: #5f6368; }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 16px 0;
+        }
+        .footer a { color: var(--color-1); text-decoration: none; }
+        .pagination {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .pagination button {
+            padding: 4px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .pagination button:hover { background: #f0f0f0; }
+        .pagination button:disabled { opacity: 0.4; cursor: default; }
+        @media (max-width: 768px) {
+            .dashboard-header { flex-direction: column; align-items: flex-start; }
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .chart-row { grid-template-columns: 1fr; }
+            .chart-container canvas { max-height: 240px; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>📊 税案通报大数据仪表盘 <span>v1.0</span></h1>
+            <div class="subtitle">数据来源：国家税务总局 · chinatax.gov.cn · 2021.08 — 2026.06 · 共 1,103 条记录</div>
+        </div>
+        <div class="filters">
+            <div class="filter-group">
+                <label>年份</label>
+                <select id="filter-year" onchange="dashboard.applyFilters()">
+                    <option value="all">全部</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>案件类型</label>
+                <select id="filter-type" onchange="dashboard.applyFilters()">
+                    <option value="all">全部</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <section class="kpi-row" id="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">总案件记录</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub" id="kpi-total-sub"></div></div>
+        <div class="kpi-card"><div class="kpi-label">月均曝光</div><div class="kpi-value" id="kpi-monthly">—</div><div class="kpi-sub" id="kpi-monthly-sub"></div></div>
+        <div class="kpi-card"><div class="kpi-label">覆盖省份</div><div class="kpi-value" id="kpi-provinces">—</div><div class="kpi-sub" id="kpi-provinces-sub"></div></div>
+        <div class="kpi-card"><div class="kpi-label">最大单月</div><div class="kpi-value" id="kpi-peak">—</div><div class="kpi-sub" id="kpi-peak-sub"></div></div>
+        <div class="kpi-card"><div class="kpi-label">执法通报稿</div><div class="kpi-value" id="kpi-enforcement">—</div><div class="kpi-sub" id="kpi-enforcement-sub"></div></div>
+        <div class="kpi-card"><div class="kpi-label">深度揭秘稿</div><div class="kpi-value" id="kpi-reveal">—</div><div class="kpi-sub" id="kpi-reveal-sub"></div></div>
+    </section>
+
+    <section class="chart-row">
+        <div class="chart-container">
+            <h3>📈 年度曝光趋势 <span class="badge" id="badge-yearly"></span></h3>
+            <canvas id="chart-yearly"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3>🥧 案件类型分布 <span class="badge" id="badge-type"></span></h3>
+            <canvas id="chart-type"></canvas>
+        </div>
+    </section>
+
+    <section class="chart-row">
+        <div class="chart-container">
+            <h3>🌏 省份曝光排名 <span class="badge" id="badge-province"></span></h3>
+            <canvas id="chart-province"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3>🗓 月度发稿节奏 <span class="badge" id="badge-monthly"></span></h3>
+            <canvas id="chart-monthly"></canvas>
+        </div>
+    </section>
+
+    <section class="chart-row">
+        <div class="chart-container">
+            <h3>📅 每日分布（潮汐效应） <span class="badge" id="badge-day"></span></h3>
+            <canvas id="chart-day"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3>📋 关键词频率 Top 15 <span class="badge" id="badge-kw"></span></h3>
+            <canvas id="chart-keywords"></canvas>
+        </div>
+    </section>
+
+    <section class="table-section">
+        <h3>📋 最近曝光案件 (2026年)</h3>
+        <table class="data-table" id="data-table">
+            <thead>
+                <tr>
+                    <th onclick="dashboard.sortTable('date')">日期</th>
+                    <th onclick="dashboard.sortTable('title')">标题</th>
+                    <th onclick="dashboard.sortTable('type')">类型</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+        <div class="pagination" id="pagination">
+            <button id="page-prev" onclick="dashboard.prevPage()">← 上一页</button>
+            <span id="page-info">第 1 页 / 共 1 页</span>
+            <button id="page-next" onclick="dashboard.nextPage()">下一页 →</button>
+        </div>
+    </section>
+
+    <footer class="footer">
+        数据来源：<a href="https://www.chinatax.gov.cn/chinatax/n810219/c102025/common_listwyc.html" target="_blank">国家税务总局 · 税案通报</a> ·
+        数据采集：2026-06-09 · GitHub: <a href="https://github.com/czx19930610/tax_zj" target="_blank">czx19930610/tax_zj</a>
+    </footer>
+</div>
+
+<script>
+const COLORS = ['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA8BC3','#8C8C8C','#4C72B0','#DD8452'];
+
+// ====== DATA ======
+const RAW_DATA = [
+    // Yearly distribution
+    {year:2021,count:15},{year:2022,count:623},{year:2023,count:102},{year:2024,count:44},{year:2025,count:189},{year:2026,count:130},
+];
+const MONTHLY_DATA = [
+    {ym:'2022-05',count:162},{ym:'2022-06',count:250},{ym:'2022-07',count:133},{ym:'2022-08',count:40},{ym:'2022-09',count:9},
+    {ym:'2023-01',count:11},{ym:'2023-02',count:4},{ym:'2023-03',count:7},{ym:'2023-04',count:13},{ym:'2023-05',count:8},{ym:'2023-06',count:12},{ym:'2023-07',count:12},{ym:'2023-08',count:4},{ym:'2023-09',count:19},{ym:'2023-10',count:7},{ym:'2023-11',count:5},
+    {ym:'2024-01',count:7},{ym:'2024-02',count:6},{ym:'2024-04',count:5},{ym:'2024-05',count:6},{ym:'2024-10',count:6},{ym:'2024-11',count:8},{ym:'2024-12',count:6},
+    {ym:'2025-01',count:8},{ym:'2025-02',count:8},{ym:'2025-03',count:3},{ym:'2025-04',count:20},{ym:'2025-05',count:8},{ym:'2025-05',count:8},{ym:'2025-06',count:10},{ym:'2025-07',count:20},{ym:'2025-08',count:12},{ym:'2025-09',count:28},{ym:'2025-10',count:8},{ym:'2025-11',count:46},{ym:'2025-12',count:18},
+    {ym:'2026-01',count:20},{ym:'2026-02',count:20},{ym:'2026-04',count:57},{ym:'2026-05',count:20},{ym:'2026-06',count:13},
+];
+const DAY_DATA = [];
+for(let d=1;d<=31;d++) DAY_DATA.push({day:d, count:0});
+const dayCounts = {1:40,2:15,3:12,4:41,5:34,6:31,7:21,8:30,9:29,10:35,11:17,12:22,13:25,14:30,15:49,16:41,17:69,18:31,19:43,20:23,21:22,22:49,23:23,24:22,25:46,26:71,27:43,28:80,29:41,30:40,31:28};
+DAY_DATA.forEach(d => { d.count = dayCounts[d.day] || 0; });
+
+const TYPE_DATA = [
+    {type:'骗取留抵退税',count:595},{type:'虚开发票',count:114},{type:'网络主播/网红',count:56},{type:'涉税中介',count:54},{type:'一般偷税',count:48},{type:'骗取出口退税',count:46},{type:'私户收款',count:38},{type:'个人所得税',count:31},{type:'加油站',count:28},{type:'消费税',count:22},{type:'税务人员违纪',count:22},{type:'医疗美容',count:16},{type:'平台企业',count:14},{type:'出口应征税',count:13},{type:'教育培训',count:11},
+];
+const PROVINCE_DATA = [
+    {province:'广东',count:60},{province:'辽宁',count:57},{province:'浙江',count:55},{province:'福建',count:53},{province:'山东',count:40},{province:'四川',count:38},{province:'青海',count:37},{province:'贵州',count:37},{province:'重庆',count:34},{province:'安徽',count:33},{province:'湖南',count:32},{province:'北京',count:32},{province:'云南',count:32},{province:'陕西',count:30},{province:'江苏',count:29},{province:'河北',count:29},{province:'新疆',count:29},{province:'河南',count:29},{province:'广西',count:28},{province:'吉林',count:26},{province:'甘肃',count:25},{province:'内蒙古',count:25},{province:'上海',count:24},{province:'江西',count:23},{province:'天津',count:22},{province:'湖北',count:22},{province:'海南',count:22},{province:'黑龙江',count:21},{province:'山西',count:20},{province:'西藏',count:18},{province:'宁夏',count:16},
+];
+const KEYWORD_DATA = [
+    {kw:'骗取留抵退税',count:595},{kw:'虚开',count:114},{kw:'涉税中介',count:53},{kw:'主播',count:45},{kw:'出口退税',count:40},{kw:'隐匿收入',count:34},{kw:'加油站',count:32},{kw:'私户收款',count:31},{kw:'个人所得税',count:28},{kw:'消费税',count:20},{kw:'税务人员',count:19},{kw:'自然人',count:16},{kw:'研发费用',count:15},{kw:'拆分',count:14},{kw:'虚假申报',count:12},
+];
+const ARTICLE_TYPES = {enforcement:841, reveal:115, news:39, other:108};
+
+const RECENT_CASES = [
+    {date:'2026-06-05',title:'税务部门曝光5起高收入自然人偷逃个人所得税案件',type:'个人所得税'},
+    {date:'2026-06-05',title:'别把"高收入"变成"高风险"',type:'个人所得税'},
+    {date:'2026-06-05',title:'一人名下多家个人独资企业 专家提醒需汇总申报',type:'个人所得税'},
+    {date:'2026-06-05',title:'揭秘自然人王建军隐瞒收入虚假申报偷逃个人所得税案件',type:'个人所得税'},
+    {date:'2026-06-05',title:'国家税务总局宿迁市税务局依法查处自然人王建军偷税案件',type:'个人所得税'},
+    {date:'2026-06-05',title:'多次代垫显异常 "阴阳合同"隐实情——揭秘王元春偷税',type:'个人所得税'},
+    {date:'2026-06-05',title:'国家税务总局三明市税务局依法查处王元春、王逢春偷税',type:'个人所得税'},
+    {date:'2026-06-05',title:'热门口腔医院隐匿千万收入偷税被罚——揭秘郭宝山偷税',type:'个人所得税'},
+    {date:'2026-06-05',title:'国家税务总局武威市税务局依法查处郭宝山偷税',type:'个人所得税'},
+    {date:'2026-06-05',title:'个人独资企业背后的偷税猫腻——揭秘党迎凤偷税案',type:'个人所得税'},
+    {date:'2026-06-05',title:'国家税务总局重庆市税务局第三稽查局依法查处党迎凤偷税',type:'个人所得税'},
+    {date:'2026-06-05',title:'百万租金隐藏在"海面"以下——揭秘王充少缴税款',type:'个人所得税'},
+    {date:'2026-06-05',title:'国家税务总局大连市税务局第三稽查局依法查处王充案',type:'个人所得税'},
+    {date:'2026-05-22',title:'税务部门集中曝光8起私户收款偷税案件',type:'私户收款'},
+    {date:'2026-05-22',title:'多起私户收款偷逃税案件被曝光！经营主体应依法开立对公账户',type:'私户收款'},
+    {date:'2026-05-22',title:'煤款暗流——揭秘内蒙古伊东集团西乌素煤炭私户收款偷税',type:'私户收款'},
+    {date:'2026-05-22',title:'国家税务总局鄂尔多斯市税务局第二稽查局依法查处',type:'私户收款'},
+    {date:'2026-05-22',title:'火爆直播间背后的私户收款真相——揭秘即墨区瑞安转角服装店',type:'私户收款'},
+    {date:'2026-05-22',title:'国家税务总局青岛市税务局第三稽查局依法查处',type:'私户收款'},
+    {date:'2026-05-22',title:'"私户"藏货款 "借款"作伪装——揭秘大柴旦和信科技',type:'私户收款'},
+    {date:'2026-05-22',title:'营养食品公司的"隐身账"——揭秘湖南婴商营养食品私户收款',type:'私户收款'},
+    {date:'2026-05-22',title:'家装业务亿元账外收入的"隐身术"——秦皇岛城市人家装饰',type:'私户收款'},
+    {date:'2026-05-22',title:'口腔诊所的"数字化"两本账——沈阳国民口腔门诊',type:'私户收款'},
+    {date:'2026-05-22',title:'大额流水背后的偷税"猫腻"——阿克苏启善建材',type:'私户收款'},
+    {date:'2026-05-22',title:'私户收款藏猫腻 "隐身"油款终现形——泽州县郊南加油站',type:'私户收款'},
+    {date:'2026-05-15',title:'"百万学员"知识主播的偷税真相——揭秘王仲焘偷税案',type:'网络主播'},
+    {date:'2026-05-15',title:'国家税务总局北京市税务局第三稽查局依法查处王仲焘',type:'网络主播'},
+    {date:'2026-04-29',title:'税务部门曝光6起医疗美容行业偷税案件',type:'医疗美容'},
+    {date:'2026-04-29',title:'多起医美机构私户收款偷逃税被查处！',type:'医疗美容'},
+    {date:'2026-04-29',title:'医美公司的"整形"账簿——辽宁曙光整形外科医院',type:'医疗美容'},
+    {date:'2026-04-29',title:'POS机收款全入私账——贵州吴氏嘉美整形美容',type:'医疗美容'},
+    {date:'2026-04-29',title:'"美丽"账本背后的真相——常州苏王医疗美容',type:'医疗美容'},
+    {date:'2026-04-29',title:'"免税"做幌 "私账"收款——北京邦定美容整形',type:'医疗美容'},
+    {date:'2026-04-29',title:'藏不住的偷税账——保定华美整形美容医院',type:'医疗美容'},
+    {date:'2026-04-29',title:'"账外账"里的千万营收——广州氧颜医疗美容',type:'医疗美容'},
+    {date:'2026-04-28',title:'税务部门依法查处"探店"网红白冰偷税 税款1891万元',type:'网络主播'},
+    {date:'2026-04-27',title:'退税"馅饼"实为"陷阱" 近1800人上当——咸阳虚假填报个税',type:'个人所得税'},
+    {date:'2026-04-17',title:'税务部门曝光8起偷逃消费税案件（珠宝/白酒/成品油）',type:'消费税'},
+    {date:'2026-04-17',title:'"绕行"万里偷逃消费税——辽宁潮尊珠宝',type:'消费税'},
+    {date:'2026-04-17',title:'六店隐匿藏私账——靖江靖祥珠宝偷逃消费税',type:'消费税'},
+    {date:'2026-04-17',title:'隐匿千万营收 注销难逃追责——歙县珠宝店',type:'消费税'},
+    {date:'2026-04-17',title:'私人账户收货款——汶上县鑫福黄金珠宝店',type:'消费税'},
+    {date:'2026-04-17',title:'隐藏起来的黄金销售款——西藏垦泰商贸成都分公司',type:'消费税'},
+    {date:'2026-04-17',title:'私人账户成隐秘"金库"——阿克苏市富晨珠宝行',type:'消费税'},
+    {date:'2026-04-17',title:'A级光环下的"影子账户"——仁怀市茅台镇鹏程酒厂',type:'消费税'},
+    {date:'2026-04-17',title:'石化经销企业暗藏的油品"调和术"——茂名宏坚石化',type:'消费税'},
+    {date:'2026-04-09',title:'税务部门曝光4起社会教育培训行业偷税案件',type:'教育培训'},
+    {date:'2026-04-09',title:'账外收入藏偷税迷局——重庆金标尺职业考试培训',type:'教育培训'},
+    {date:'2026-04-09',title:'收进来的学费 "调"低了的利润——铜仁红色二八培训',type:'教育培训'},
+    {date:'2026-04-09',title:'"不确认收入"背后的偷税算计——宁夏易阳教育',type:'教育培训'},
+    {date:'2026-04-09',title:'学费流入"私账" 偷税终食苦果——山东正心教育',type:'教育培训'},
+    {date:'2026-04-01',title:'税务部门曝光5起虚开增值税发票案件',type:'虚开发票'},
+    {date:'2026-04-01',title:'"道具工厂"背后的亿元虚假交易——刘杨团伙虚开案',type:'虚开发票'},
+    {date:'2026-04-01',title:'冒用信息虚假注册——陈明雄团伙虚开案',type:'虚开发票'},
+    {date:'2026-04-01',title:'假厂房、旧设备、"真"发票——陕西卓拓物资回收',type:'虚开发票'},
+    {date:'2026-04-01',title:'透视"白糖"发票变身术——青海方雄建材化工',type:'虚开发票'},
+    {date:'2026-04-01',title:'酸枣仁背后的"无本买卖"——内丘一色秋水中药材虚开',type:'虚开发票'},
+    {date:'2026-02-27',title:'税务部门曝光4起骗取出口退税违法案件',type:'骗取出口退税'},
+    {date:'2026-02-27',title:'"空壳"表演出口 实为全链骗税——天津杨荣栋案',type:'骗取出口退税'},
+    {date:'2026-02-27',title:'空壳工厂跨省"买单"——刘敬伟团伙骗税案',type:'骗取出口退税'},
+    {date:'2026-02-27',title:'农产品发票成"道具"——赤水汇达丰商贸骗税',type:'骗取出口退税'},
+    {date:'2026-02-27',title:'空壳企业搭桥——泓一生物工程骗税案',type:'骗取出口退税'},
+    {date:'2026-02-06',title:'税务部门曝光4起骗享税费优惠偷税案件',type:'骗享优惠'},
+    {date:'2026-02-06',title:'千万"假研发"费用——西藏慧业医药科技',type:'骗享优惠'},
+    {date:'2026-02-06',title:'25个账户打款的背后——扬州春风船舶机械',type:'骗享优惠'},
+    {date:'2026-02-06',title:'千万收入隐"云端"——安徽星印网络科技',type:'骗享优惠'},
+    {date:'2026-02-06',title:'压利润"扮小微"——嘉峪关宏兴西域能源',type:'骗享优惠'},
+    {date:'2026-01-14',title:'税务部门再次曝光2起网络主播偷税案件',type:'网络主播'},
+    {date:'2026-01-14',title:'坐拥三千万粉 高人气主播背后的"收入暗账"——彭煊之',type:'网络主播'},
+    {date:'2026-01-14',title:'佣金收入虚假申报——网络主播杨遂娃偷税',type:'网络主播'},
+    {date:'2026-01-08',title:'税务部门再次曝光6起涉税中介违法违规案件',type:'涉税中介'},
+    {date:'2026-01-08',title:'沈阳遇知科技——虚假申报高新资格',type:'涉税中介'},
+    {date:'2026-01-08',title:'宜兴苏瑞代理记账——虚列成本',type:'涉税中介'},
+    {date:'2026-01-08',title:'宁波甬九财税——虚列成本',type:'涉税中介'},
+    {date:'2026-01-08',title:'吉林弘成财务——虚开增值税发票',type:'涉税中介'},
+    {date:'2026-01-08',title:'广元铭慧企业管理——虚开增值税发票',type:'涉税中介'},
+    {date:'2026-01-08',title:'商洛卡尔曼——虚开增值税发票',type:'涉税中介'},
+];
+
+// ====== DASHBOARD CLASS ======
+class Dashboard {
+    constructor() {
+        this.charts = {};
+        this.page = 0;
+        this.pageSize = 15;
+        this.sortCol = 'date';
+        this.sortDir = 'desc';
+        this.filteredCases = RECENT_CASES;
+        this.init();
+    }
+
+    init() {
+        this.populateTypeFilter();
+        this.renderKPIs();
+        this.createCharts();
+        this.renderTable();
+    }
+
+    populateTypeFilter() {
+        const types = [...new Set(RECENT_CASES.map(c => c.type))].sort();
+        const sel = document.getElementById('filter-type');
+        types.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t; opt.textContent = t;
+            sel.appendChild(opt);
+        });
+    }
+
+    applyFilters() {
+        const year = document.getElementById('filter-year').value;
+        const type = document.getElementById('filter-type').value;
+        this.filteredCases = RECENT_CASES.filter(c => {
+            if (year !== 'all' && c.date.substring(0,4) !== year) return false;
+            if (type !== 'all' && c.type !== type) return false;
+            return true;
+        });
+        this.page = 0;
+        this.renderTable();
+        // For charts - when year filter changes, update the yearly highlight
+        if (year !== 'all') {
+            document.getElementById('badge-yearly').textContent = `筛选: ${year}年`;
+        } else {
+            document.getElementById('badge-yearly').textContent = '';
+        }
+    }
+
+    renderKPIs() {
+        document.getElementById('kpi-total').textContent = '1,103';
+        document.getElementById('kpi-total-sub').textContent = '2021.08 — 2026.06';
+        document.getElementById('kpi-monthly').textContent = '19.7';
+        document.getElementById('kpi-monthly-sub').textContent = '条/月 (56个月)';
+        document.getElementById('kpi-provinces').textContent = '31';
+        document.getElementById('kpi-provinces-sub').textContent = '省/自治区/直辖市全覆盖';
+        document.getElementById('kpi-peak').textContent = '250';
+        document.getElementById('kpi-peak-sub').textContent = '2022年6月';
+        document.getElementById('kpi-enforcement').textContent = '841';
+        document.getElementById('kpi-enforcement-sub').textContent = '占76.2% · 执法通报';
+        document.getElementById('kpi-reveal').textContent = '115';
+        document.getElementById('kpi-reveal-sub').textContent = '占10.4% · 深度揭秘';
+    }
+
+    formatNum(v) { if (v >= 1000) return (v/1000).toFixed(1)+'K'; return v.toString(); }
+
+    createCharts() {
+        // Yearly bar
+        this.charts.yearly = new Chart(document.getElementById('chart-yearly'), {
+            type: 'bar',
+            data: {
+                labels: RAW_DATA.map(d => d.year),
+                datasets: [{
+                    label: '发稿量',
+                    data: RAW_DATA.map(d => d.count),
+                    backgroundColor: RAW_DATA.map(d => d.count > 100 ? '#C44E52CC' : '#4C72B0CC'),
+                    borderColor: RAW_DATA.map(d => d.count > 100 ? '#C44E52' : '#4C72B0'),
+                    borderWidth: 1, borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} 条` } }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, ticks: { callback: v => this.formatNum(v) } }
+                }
+            }
+        });
+
+        // Type doughnut
+        const typeLabels = TYPE_DATA.map(d => d.type);
+        const typeCounts = TYPE_DATA.map(d => d.count);
+        const typeColors = typeCounts.map((c,i) => COLORS[i%COLORS.length]+'CC');
+        this.charts.type = new Chart(document.getElementById('chart-type'), {
+            type: 'doughnut',
+            data: {
+                labels: typeLabels,
+                datasets: [{
+                    data: typeCounts,
+                    backgroundColor: typeColors,
+                    borderColor: '#fff', borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '55%',
+                plugins: {
+                    legend: { position: 'right', labels: { usePointStyle: true, padding: 10, font: {size:11} } },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                                return `${ctx.label}: ${ctx.parsed} 条 (${(ctx.parsed/total*100).toFixed(1)}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Province horizontal bar (top 15)
+        const provTop = PROVINCE_DATA.slice(0, 15).reverse();
+        this.charts.province = new Chart(document.getElementById('chart-province'), {
+            type: 'bar',
+            data: {
+                labels: provTop.map(d => d.province),
+                datasets: [{
+                    data: provTop.map(d => d.count),
+                    backgroundColor: provTop.map((_,i) => COLORS[i%COLORS.length]+'CC'),
+                    borderColor: provTop.map((_,i) => COLORS[i%COLORS.length]),
+                    borderWidth: 1, borderRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, ticks: { callback: v => this.formatNum(v) } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Monthly line
+        const monthLabels = MONTHLY_DATA.map(d => d.ym);
+        const monthCounts = MONTHLY_DATA.map(d => d.count);
+        this.charts.monthly = new Chart(document.getElementById('chart-monthly'), {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: '发稿量',
+                    data: monthCounts,
+                    borderColor: '#4C72B0',
+                    backgroundColor: '#4C72B020',
+                    fill: true, tension: 0.3,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 10, font: {size:10} } },
+                    y: { beginAtZero: true, ticks: { callback: v => this.formatNum(v) } }
+                }
+            }
+        });
+
+        // Day-of-month bar
+        this.charts.day = new Chart(document.getElementById('chart-day'), {
+            type: 'bar',
+            data: {
+                labels: DAY_DATA.map(d => d.day+'日'),
+                datasets: [{
+                    data: DAY_DATA.map(d => d.count),
+                    backgroundColor: DAY_DATA.map(d => d.day >= 21 ? '#C44E52AA' : '#4C72B0AA'),
+                    borderColor: DAY_DATA.map(d => d.day >= 21 ? '#C44E52' : '#4C72B0'),
+                    borderWidth: 1, borderRadius: 2,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} 条` } }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 16, font: {size:10} } },
+                    y: { beginAtZero: true, ticks: { callback: v => this.formatNum(v) } }
+                }
+            }
+        });
+
+        // Keywords
+        const kwLabels = KEYWORD_DATA.map(d => d.kw);
+        const kwCounts = KEYWORD_DATA.map(d => d.count);
+        this.charts.keywords = new Chart(document.getElementById('chart-keywords'), {
+            type: 'bar',
+            data: {
+                labels: kwLabels,
+                datasets: [{
+                    data: kwCounts,
+                    backgroundColor: kwCounts.map((c,i) => i < 3 ? '#C44E52CC' : '#4C72B0CC'),
+                    borderColor: kwCounts.map((c,i) => i < 3 ? '#C44E52' : '#4C72B0'),
+                    borderWidth: 1, borderRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, ticks: { callback: v => this.formatNum(v) } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    sortTable(col) {
+        if (this.sortCol === col) {
+            this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            this.sortCol = col;
+            this.sortDir = col === 'title' ? 'asc' : 'desc';
+        }
+        this.renderTable();
+    }
+
+    prevPage() {
+        if (this.page > 0) { this.page--; this.renderTable(); }
+    }
+    nextPage() {
+        const maxPage = Math.ceil(this.filteredCases.length / this.pageSize) - 1;
+        if (this.page < maxPage) { this.page++; this.renderTable(); }
+    }
+
+    renderTable() {
+        const sorted = [...this.filteredCases].sort((a, b) => {
+            const aVal = a[this.sortCol], bVal = b[this.sortCol];
+            if (this.sortCol === 'date') {
+                return this.sortDir === 'desc' ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+            }
+            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+            return this.sortDir === 'asc' ? cmp : -cmp;
+        });
+        const start = this.page * this.pageSize;
+        const end = Math.min(start + this.pageSize, sorted.length);
+        const pageData = sorted.slice(start, end);
+        const tbody = document.getElementById('table-body');
+        const tagMap = {
+            '个人所得税':'tag-blue','私户收款':'tag-red','网络主播':'tag-purple',
+            '医疗美容':'tag-orange','消费税':'tag-orange','教育培训':'tag-green',
+            '虚开发票':'tag-red','骗取出口退税':'tag-orange','骗享优惠':'tag-green',
+            '涉税中介':'tag-purple'
+        };
+        tbody.innerHTML = pageData.map(d => {
+            const tagClass = tagMap[d.type] || 'tag-gray';
+            return `<tr><td style="white-space:nowrap">${d.date}</td><td>${d.title}</td><td><span class="tag ${tagClass}">${d.type}</span></td></tr>`;
+        }).join('');
+        const totalPages = Math.ceil(sorted.length / this.pageSize) || 1;
+        document.getElementById('page-info').textContent = `第 ${this.page+1} 页 / 共 ${totalPages} 页（共 ${sorted.length} 条）`;
+        document.getElementById('page-prev').disabled = this.page === 0;
+        document.getElementById('page-next').disabled = this.page >= totalPages - 1;
+    }
+}
+
+const dashboard = new Dashboard();
+</script>
+</body>
+</html>
