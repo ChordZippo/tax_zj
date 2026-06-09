@@ -40,12 +40,19 @@
     },
     "condition": false,
     "ignoreUploadUnusedFiles": true,
-    "lazyCodeLoading": "requiredComponents"
+    "lazyCodeLoading": "requiredComponents",
+    "compileWorklet": false,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.16.1",
   "appid": "wx52e1848182301339",
   "projectname": "税案通报大数据分析",
   "condition": {},
-  "editorSetting": {}
+  "editorSetting": {},
+  "simulatorPluginLibVersion": {}
 }
