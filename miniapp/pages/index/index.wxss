@@ -90,33 +90,6 @@
   width: 100%;
   height: 360rpx;
 }
-.chart-canvas-wide {
-  width: 800rpx;
-  height: 360rpx;
-}
-.chart-canvas-half {
-  width: 100%;
-  height: 400rpx;
-}
-.chart-scroll {
-  width: 100%;
-  white-space: nowrap;
-}
-.chart-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* Split columns */
-.section-row {
-  display: flex;
-  gap: 20rpx;
-  margin-bottom: 20rpx;
-}
-.half {
-  flex: 1;
-  margin-bottom: 0;
-  min-width: 0;
-}
 
 /* Batch list */
 .batch-list {

@@ -25,24 +25,23 @@
       <text class="section-title">🗓 月度发稿节奏</text>
       <text class="section-badge">37个月</text>
     </view>
-    <scroll-view scroll-x class="chart-scroll">
-      <canvas canvas-id="chartMonthly" class="chart-canvas-wide"></canvas>
-    </scroll-view>
+    <canvas canvas-id="chartMonthly" class="chart-canvas"></canvas>
   </view>
 
-  <view class="section-row">
-    <view class="section half">
-      <view class="section-header">
-        <text class="section-title">🥧 案件类型</text>
-      </view>
-      <canvas canvas-id="chartType" class="chart-canvas-half"></canvas>
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🥧 案件类型分布</text>
+      <text class="section-badge">7类</text>
     </view>
-    <view class="section half">
-      <view class="section-header">
-        <text class="section-title">🌏 省份Top10</text>
-      </view>
-      <canvas canvas-id="chartProvince" class="chart-canvas-half"></canvas>
+    <canvas canvas-id="chartType" class="chart-canvas"></canvas>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🌏 省份曝光排名</text>
+      <text class="section-badge">Top 10</text>
     </view>
+    <canvas canvas-id="chartProvince" class="chart-canvas"></canvas>
   </view>
 
   <view class="section">
