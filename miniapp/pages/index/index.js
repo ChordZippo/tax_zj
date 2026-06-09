@@ -97,8 +97,8 @@ Page({
         ctx.setFontSize(12);
         ctx.fillText(labels[i], x + barW / 2, h - 8);
       }
-      ctx.draw(true, function() { if (cb) setTimeout(cb, 100); });
-    } catch(e) { console.log('Y err ' + e.message); if (cb) setTimeout(cb, 100); }
+      ctx.draw(false, function() { if (cb) setTimeout(cb, 50); });
+    } catch(e) { console.log('Y err ' + e.message); if (cb) setTimeout(cb, 50); }
   },
 
   // ---- 月度 ----
@@ -124,7 +124,7 @@ Page({
           ctx.fillText(d[i].ym, x + barW / 2, h - 6);
         }
       }
-      ctx.draw(true, function() { if (cb) setTimeout(cb, 100); });
+      ctx.draw(false, function() { if (cb) setTimeout(cb, 100); });
     } catch(e) { console.log('M err ' + e.message); if (cb) setTimeout(cb, 100); }
   },
 
@@ -151,7 +151,7 @@ Page({
           ctx.fillText((i + 1) + '', x + barW / 2, h - 6);
         }
       }
-      ctx.draw(true, function() { if (cb) setTimeout(cb, 100); });
+      ctx.draw(false, function() { if (cb) setTimeout(cb, 100); });
     } catch(e) { console.log('D err ' + e.message); if (cb) setTimeout(cb, 100); }
   },
 
@@ -200,7 +200,7 @@ Page({
         ctx.fillText(d[i].t + '  ' + pct + '%', lx + 22, ly + 13);
         ly += 28;
       }
-      ctx.draw(true, function() { if (cb) setTimeout(cb, 100); });
+      ctx.draw(false, function() { if (cb) setTimeout(cb, 100); });
     } catch(e) { console.log('T err ' + e.message); if (cb) setTimeout(cb, 100); }
   },
 
@@ -233,7 +233,7 @@ Page({
         ctx.setTextAlign('left');
         ctx.fillText(d[i].c + '', padL + bw + 8, y + barH / 2 + 4);
       }
-      ctx.draw(true, function() { if (cb) setTimeout(cb, 100); });
+      ctx.draw(false, function() { if (cb) setTimeout(cb, 100); });
     } catch(e) { console.log('P err ' + e.message); if (cb) setTimeout(cb, 100); }
   },
 
@@ -265,7 +265,7 @@ Page({
         ctx.setTextAlign('left');
         ctx.fillText(d[i].c + '', padL + bw + 8, y + barH / 2 + 4);
       }
-      ctx.draw(true, function() { if (cb) setTimeout(cb, 100); });
+      ctx.draw(false, function() { if (cb) setTimeout(cb, 100); });
     } catch(e) { console.log('K err ' + e.message); if (cb) setTimeout(cb, 100); }
   }
 });
