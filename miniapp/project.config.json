@@ -40,7 +40,7 @@
   },
   "compileType": "miniprogram",
   "libVersion": "3.6.0",
-  "appid": "请替换为你的微信小程序AppID",
+  "appid": "wx52e1848182301339",
   "projectname": "税案通报大数据分析",
   "condition": {}
 }

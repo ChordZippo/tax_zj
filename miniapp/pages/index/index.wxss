@@ -90,9 +90,20 @@
   width: 100%;
   height: 360rpx;
 }
+.chart-canvas-wide {
+  width: 800rpx;
+  height: 360rpx;
+}
 .chart-canvas-half {
   width: 100%;
   height: 400rpx;
+}
+.chart-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+.chart-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 /* Split columns */

@@ -1,11 +1,9 @@
 <scroll-view class="page" scroll-y enable-back-to-top>
-  <!-- ====== 头图 ====== -->
   <view class="header">
     <text class="header-title">📊 税案通报大数据仪表盘</text>
     <text class="header-sub">国家税务总局 · 1,103 条记录 · 2021-2026</text>
   </view>
 
-  <!-- ====== KPI 卡片 ====== -->
   <view class="kpi-grid">
     <view class="kpi-card" wx:for="{{kpis}}" wx:key="label" style="border-left-color: {{item.color}}">
       <text class="kpi-label">{{item.label}}</text>
@@ -14,7 +12,6 @@
     </view>
   </view>
 
-  <!-- ====== 年度趋势 ====== -->
   <view class="section">
     <view class="section-header">
       <text class="section-title">📈 年度曝光趋势</text>
@@ -23,16 +20,16 @@
     <canvas class="chart-canvas" canvas-id="chartYearly" type="2d"></canvas>
   </view>
 
-  <!-- ====== 月度节奏 ====== -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title">🗓 月度发稿节奏</text>
-      <text class="section-badge">下半月=上半月1.6x</text>
+      <text class="section-title">🗓 月度发稿节奏（可左右滑动）</text>
+      <text class="section-badge">37个月</text>
     </view>
-    <canvas class="chart-canvas" canvas-id="chartMonthly" type="2d"></canvas>
+    <scroll-view scroll-x class="chart-scroll">
+      <canvas class="chart-canvas-wide" canvas-id="chartMonthly" type="2d"></canvas>
+    </scroll-view>
   </view>
 
-  <!-- ====== 类型分布 + 省份排名 双栏 ====== -->
   <view class="section-row">
     <view class="section half">
       <view class="section-header">
@@ -48,7 +45,6 @@
     </view>
   </view>
 
-  <!-- ====== 每日潮汐 ====== -->
   <view class="section">
     <view class="section-header">
       <text class="section-title">📅 每日分布（潮汐效应）</text>
@@ -57,7 +53,6 @@
     <canvas class="chart-canvas" canvas-id="chartDay" type="2d"></canvas>
   </view>
 
-  <!-- ====== 关键词频率 ====== -->
   <view class="section">
     <view class="section-header">
       <text class="section-title">📋 关键词频率 Top 10</text>
@@ -65,7 +60,6 @@
     <canvas class="chart-canvas" canvas-id="chartKeyword" type="2d"></canvas>
   </view>
 
-  <!-- ====== 批量曝光记录 ====== -->
   <view class="section">
     <view class="section-header">
       <text class="section-title">📋 2026年曝光批次</text>
@@ -82,7 +76,6 @@
     </view>
   </view>
 
-  <!-- ====== 数据来源 ====== -->
   <view class="footer">
     <text>数据来源：国家税务总局 chinatax.gov.cn</text>
     <text>数据采集：2026-06-09</text>
