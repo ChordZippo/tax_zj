@@ -6,6 +6,13 @@
 
 [https://chordzippo.github.io/tax_zj/](https://chordzippo.github.io/tax_zj/)
 
+## 📱 扫码访问
+
+<p align="center">
+  <img src="wx_qrcode_small.png" width="300" alt="微信扫码查看仪表盘"><br>
+  <em>微信/浏览器扫码查看完整分析仪表盘</em>
+</p>
+
 ## 📋 项目内容
 
 - `dashboard.html` / `index.html` — 交互式数据分析仪表盘（Chart.js 可视化）
