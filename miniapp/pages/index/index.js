@@ -1,5 +1,4 @@
-// ======== 数据 ========
-const DATA = {
+var DATA = {
   years: [{y:2021,c:15},{y:2022,c:623},{y:2023,c:102},{y:2024,c:44},{y:2025,c:189},{y:2026,c:130}],
   months: [
     {ym:'22-05',c:162},{ym:'22-06',c:250},{ym:'22-07',c:133},{ym:'22-08',c:40},{ym:'22-09',c:9},
@@ -36,50 +35,7 @@ const DATA = {
   ]
 };
 
-const C = ['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA8BC3'];
-
-// ====== 安全获取Canvas ======
-function initCanvas(canvasId) {
-  return new Promise(function(resolve, reject) {
-    wx.createSelectorQuery()
-      .select('#' + canvasId)
-      .fields({ node: true, size: true })
-      .exec(function(res) {
-        if (!res || !res[0] || !res[0].node) {
-          console.warn('Canvas not found:', canvasId);
-          reject(new Error('no canvas'));
-          return;
-        }
-        var canvas = res[0].node;
-        var ctx = canvas.getContext('2d');
-        var dpr = wx.getWindowInfo().pixelRatio;
-        var w = res[0].width;
-        var h = res[0].height;
-        if (w === 0 || h === 0) {
-          w = 300; h = 200; // fallback
-        }
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
-        ctx.scale(dpr, dpr);
-        resolve({ ctx: ctx, w: w, h: h, canvas: canvas, dpr: dpr });
-      });
-  });
-}
-
-// ====== 圆角矩形 (不用roundRect，兼容所有版本) ======
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.arcTo(x + w, y, x + w, y + r, r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-  ctx.lineTo(x + r, y + h);
-  ctx.arcTo(x, y + h, x, y + h - r, r);
-  ctx.lineTo(x, y + r);
-  ctx.arcTo(x, y, x + r, y, r);
-  ctx.closePath();
-}
+var C = ['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA8BC3'];
 
 Page({
   data: {
@@ -96,63 +52,45 @@ Page({
 
   onReady: function() {
     var that = this;
-    // 延迟确保canvas已渲染
     setTimeout(function() {
-      that.drawAll();
-    }, 500);
-  },
-
-  drawAll: function() {
-    this.drawYearly();
-    this.drawMonthly();
-    this.drawType();
-    this.drawProvince();
-    this.drawDay();
-    this.drawKeyword();
-  },
-
-  // ====== 年度柱状图 ======
-  drawYearly: function() {
-    var that = this;
-    initCanvas('chartYearly').then(function(r) {
-      that.drawVBar(r.ctx, r.w, r.h, DATA.years.map(function(d){return d.c}), DATA.years.map(function(d){return d.y+'年'}), 700);
-    }).catch(function(){});
-  },
-
-  // ====== 月度柱状图 ======
-  drawMonthly: function() {
-    var that = this;
-    initCanvas('chartMonthly').then(function(r) {
-      var w2 = Math.max(r.w, 800);
-      r.canvas.width = w2 * r.dpr;
-      r.ctx.scale(r.dpr, r.dpr);
-      that.drawVBar(r.ctx, w2, r.h, DATA.months.map(function(d){return d.c}), DATA.months.map(function(d){return d.ym}), 280);
-    }).catch(function(){});
+      that.drawYearly();
+      that.drawMonthly();
+      that.drawType();
+      that.drawProvince();
+      that.drawDay();
+      that.drawKeyword();
+    }, 800);
   },
 
   // ====== 竖向柱状图 ======
-  drawVBar: function(ctx, w, h, data, labels, maxV) {
+  drawVBar: function(id, data, labels, maxV) {
+    var ctx = wx.createCanvasContext(id, this);
     var n = data.length;
-    var padL = 45, padR = 15, padT = 30, padB = 40;
+    var w = 320, h = 290;
+    if (id === 'chartMonthly') { w = 800; }
+
+    var padL = 45, padR = 15, padT = 35, padB = 45;
     var cw = w - padL - padR;
     var ch = h - padT - padB;
     var gap = n > 25 ? 2 : n > 10 ? 4 : 6;
     var barW = Math.max(1, (cw - gap * (n + 1)) / n);
 
-    ctx.clearRect(0, 0, w, h);
+    // 底色
+    ctx.setFillStyle('#f8f9fa');
+    ctx.fillRect(0, 0, w, h);
 
     // 网格线
-    ctx.strokeStyle = '#eee';
-    ctx.lineWidth = 1;
     for (var i = 0; i <= 4; i++) {
       var y = padT + ch - (ch * i / 4);
+      ctx.setStrokeStyle('#eee');
+      ctx.setLineWidth(1);
       ctx.beginPath();
       ctx.moveTo(padL, y);
       ctx.lineTo(w - padR, y);
       ctx.stroke();
-      ctx.fillStyle = '#999';
-      ctx.font = '10px sans-serif';
-      ctx.textAlign = 'right';
+      ctx.setFillStyle('#999');
+      ctx.setFontSize(10);
+      ctx.setTextAlign('right');
       ctx.fillText(Math.round(maxV * i / 4).toString(), padL - 5, y + 4);
     }
 
@@ -163,169 +101,175 @@ Page({
       var v = data[i];
       var barH = Math.max(0, (v / maxV) * ch);
       var y = padT + ch - barH;
-      ctx.fillStyle = data[i] > 100 ? '#C44E52' : '#4C72B0';
+      ctx.setFillStyle(v > 100 ? '#C44E52' : '#4C72B0');
       if (barH > 2) {
-        roundRect(ctx, x, y, barW, barH, 2);
+        var r = 2;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + barW - r, y);
+        ctx.arcTo(x + barW, y, x + barW, y + r, r);
+        ctx.lineTo(x + barW, padT + ch);
+        ctx.lineTo(x, padT + ch);
+        ctx.lineTo(x, y + r);
+        ctx.arcTo(x, y, x + r, y, r);
         ctx.fill();
       }
-      // 顶部数值 (限制显示数量)
       if (n <= 15) {
-        ctx.fillStyle = '#333';
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'center';
+        ctx.setFillStyle('#333');
+        ctx.setFontSize(10);
+        ctx.setTextAlign('center');
         ctx.fillText(v.toString(), x + barW / 2, y - 5);
       }
-      // X轴标签
-      if (n > 31 && i % 3 !== 0 && i !== n - 1) continue;
-      ctx.fillStyle = '#666';
-      ctx.font = n > 20 ? '8px sans-serif' : '10px sans-serif';
-      ctx.textAlign = 'center';
+      if (n > 31) {
+        if (i % 3 !== 0 && i !== n - 1) continue;
+      }
+      ctx.setFillStyle('#666');
+      ctx.setFontSize(n > 20 ? 8 : 10);
+      ctx.setTextAlign('center');
       ctx.fillText(labels[i], x + barW / 2, h - 8);
     }
+
+    ctx.draw();
+  },
+
+  // ====== 年度 ======
+  drawYearly: function() {
+    this.drawVBar('chartYearly',
+      DATA.years.map(function(d){return d.c}),
+      DATA.years.map(function(d){return d.y+'年'}),
+      700);
+  },
+
+  // ====== 月度 ======
+  drawMonthly: function() {
+    this.drawVBar('chartMonthly',
+      DATA.months.map(function(d){return d.c}),
+      DATA.months.map(function(d){return d.ym}),
+      280);
+  },
+
+  // ====== 每日 ======
+  drawDay: function() {
+    var labels = [];
+    for (var i = 1; i <= 31; i++) labels.push(i + '日');
+    this.drawVBar('chartDay', DATA.days, labels, 90);
   },
 
   // ====== 环形图 ======
   drawType: function() {
-    var that = this;
-    initCanvas('chartType').then(function(r) {
-      var ctx = r.ctx, w = r.w, h = r.h;
-      var data = DATA.types;
-      var total = 0;
-      for (var i = 0; i < data.length; i++) total += data[i].c;
+    var ctx = wx.createCanvasContext('chartType', this);
+    var data = DATA.types;
+    var total = 0;
+    for (var i = 0; i < data.length; i++) total += data[i].c;
 
-      ctx.clearRect(0, 0, w, h);
+    var w = 320, h = 310;
+    ctx.setFillStyle('#ffffff');
+    ctx.fillRect(0, 0, w, h);
 
-      var cx = w * 0.35, cy = h / 2;
-      var rSize = Math.max(40, Math.min(cx - 15, cy - 20));
-      var innerR = rSize * 0.5;
+    var cx = 80, cy = 140, rSize = 70, innerR = 35;
 
-      var startAngle = -Math.PI / 2;
-      for (var i = 0; i < data.length; i++) {
-        var angle = (data[i].c / total) * Math.PI * 2;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, rSize, startAngle, startAngle + angle);
-        ctx.closePath();
-        ctx.fillStyle = C[i % C.length];
-        ctx.fill();
-        startAngle += angle;
-      }
-
-      // 中心白圆
+    var startAngle = -Math.PI / 2;
+    for (var i = 0; i < data.length; i++) {
+      var angle = (data[i].c / total) * Math.PI * 2;
       ctx.beginPath();
-      ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, rSize, startAngle, startAngle + angle);
+      ctx.closePath();
+      ctx.setFillStyle(C[i % C.length]);
+      ctx.fill();
+      startAngle += angle;
+    }
+
+    // 中心圆
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.setFillStyle('#ffffff');
+    ctx.fill();
+
+    ctx.setFillStyle('#1a1a2e');
+    ctx.setFontSize(18);
+    ctx.setTextAlign('center');
+    ctx.fillText(total.toString(), cx, cy - 2);
+    ctx.setFontSize(12);
+    ctx.setFillStyle('#999');
+    ctx.fillText('条', cx, cy + 16);
+
+    // 图例
+    var ly = 15;
+    var lx = 175;
+    for (var i = 0; i < data.length; i++) {
+      ctx.setFillStyle(C[i % C.length]);
+      ctx.fillRect(lx, ly, 14, 14);
+      ctx.setFillStyle('#333');
+      ctx.setFontSize(11);
+      ctx.setTextAlign('left');
+      var pct = ((data[i].c / total) * 100).toFixed(1);
+      ctx.fillText(data[i].t + ' ' + pct + '%', lx + 20, ly + 12);
+      ly += 26;
+    }
+
+    ctx.draw();
+  },
+
+  // ====== 横向条形图 ======
+  drawHBar: function(id, data, labelKey, valKey, padL, maxV) {
+    var ctx = wx.createCanvasContext(id, this);
+    var n = data.length;
+    var w = 320, h = 310;
+    var padR = 40, padT = 15, padB = 15;
+    var cw = w - padL - padR;
+    var ch = h - padT - padB;
+    var barH = Math.max(14, Math.min(24, (ch - 4 * n) / n));
+    var gap = (ch - barH * n) / (n + 1);
+
+    ctx.setFillStyle('#f8f9fa');
+    ctx.fillRect(0, 0, w, h);
+
+    for (var i = 0; i < n; i++) {
+      var y = padT + gap + i * (barH + gap);
+      var bw = Math.max(0, (data[i][valKey] / maxV) * cw);
+
+      ctx.setFillStyle(C[i % C.length]);
+      var r = 3;
+      ctx.beginPath();
+      ctx.moveTo(padL + r, y);
+      ctx.lineTo(padL + bw - r, y);
+      ctx.arcTo(padL + bw, y, padL + bw, y + r, r);
+      ctx.lineTo(padL + bw, y + barH - r);
+      ctx.arcTo(padL + bw, y + barH, padL + bw - r, y + barH, r);
+      ctx.lineTo(padL + r, y + barH);
+      ctx.arcTo(padL, y + barH, padL, y + barH - r, r);
+      ctx.lineTo(padL, y + r);
+      ctx.arcTo(padL, y, padL + r, y, r);
+      ctx.closePath();
       ctx.fill();
 
-      ctx.fillStyle = '#1a1a2e';
-      ctx.font = 'bold 16px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(total.toString(), cx, cy - 4);
-      ctx.font = '10px sans-serif';
-      ctx.fillStyle = '#999';
-      ctx.fillText('条', cx, cy + 12);
+      ctx.setFillStyle('#333');
+      ctx.setFontSize(11);
+      ctx.setTextAlign('right');
+      ctx.fillText(data[i][labelKey], padL - 6, y + barH / 2 + 4);
 
-      // 图例
-      var ly = 20;
-      var lx = w * 0.6;
-      for (var i = 0; i < data.length; i++) {
-        ctx.fillStyle = C[i % C.length];
-        ctx.fillRect(lx, ly, 12, 12);
-        ctx.fillStyle = '#333';
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'left';
-        var pct = ((data[i].c / total) * 100).toFixed(1);
-        ctx.fillText(data[i].t + ' ' + pct + '%', lx + 18, ly + 10);
-        ly += 24;
-      }
-    }).catch(function(){});
+      ctx.setFillStyle('#666');
+      ctx.setFontSize(10);
+      ctx.setTextAlign('left');
+      ctx.fillText(data[i][valKey].toString(), padL + bw + 6, y + barH / 2 + 4);
+    }
+    ctx.draw();
   },
 
-  // ====== 横向条形图（省份） ======
+  // ====== 省份 ======
   drawProvince: function() {
-    var that = this;
-    initCanvas('chartProvince').then(function(r) {
-      var ctx = r.ctx, w = r.w, h = r.h;
-      var data = DATA.provinces.slice().reverse();
-      var maxV = 0;
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].c > maxV) maxV = data[i].c;
-      }
-      var padL = 70, padR = 35, padT = 15, padB = 15;
-      var cw = w - padL - padR;
-      var ch = h - padT - padB;
-      var n = data.length;
-      var barH = Math.max(14, Math.min(22, (ch - 4 * n) / n));
-      var gap = (ch - barH * n) / (n + 1);
-
-      ctx.clearRect(0, 0, w, h);
-
-      for (var i = 0; i < n; i++) {
-        var y = padT + gap + i * (barH + gap);
-        var bw = Math.max(0, (data[i].c / maxV) * cw);
-
-        ctx.fillStyle = C[i % C.length];
-        roundRect(ctx, padL, y, bw, barH, 3);
-        ctx.fill();
-
-        ctx.fillStyle = '#333';
-        ctx.font = '11px sans-serif';
-        ctx.textAlign = 'right';
-        ctx.fillText(data[i].p, padL - 6, y + barH / 2 + 4);
-
-        ctx.fillStyle = '#666';
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(data[i].c.toString(), padL + bw + 6, y + barH / 2 + 4);
-      }
-    }).catch(function(){});
+    var d = DATA.provinces.slice().reverse();
+    var maxV = 0;
+    for (var i = 0; i < d.length; i++) { if (d[i].c > maxV) maxV = d[i].c; }
+    this.drawHBar('chartProvince', d, 'p', 'c', 70, maxV);
   },
 
-  // ====== 每日柱状图 ======
-  drawDay: function() {
-    var that = this;
-    initCanvas('chartDay').then(function(r) {
-      that.drawVBar(r.ctx, r.w, r.h, DATA.days, DATA.days.map(function(_,i){return (i+1)+'日'}), 90);
-    }).catch(function(){});
-  },
-
-  // ====== 关键词横向条形图 ======
+  // ====== 关键词 ======
   drawKeyword: function() {
-    var that = this;
-    initCanvas('chartKeyword').then(function(r) {
-      var ctx = r.ctx, w = r.w, h = r.h;
-      var data = DATA.keywords.slice().reverse();
-      var maxV = 0;
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].c > maxV) maxV = data[i].c;
-      }
-      var padL = 130, padR = 35, padT = 15, padB = 15;
-      var cw = w - padL - padR;
-      var ch = h - padT - padB;
-      var n = data.length;
-      var barH = Math.max(14, Math.min(24, (ch - 4 * n) / n));
-      var gap = (ch - barH * n) / (n + 1);
-
-      ctx.clearRect(0, 0, w, h);
-
-      for (var i = 0; i < n; i++) {
-        var y = padT + gap + i * (barH + gap);
-        var bw = Math.max(0, (data[i].c / maxV) * cw);
-
-        ctx.fillStyle = i >= n - 3 ? '#C44E52' : '#4C72B0';
-        roundRect(ctx, padL, y, bw, barH, 3);
-        ctx.fill();
-
-        ctx.fillStyle = '#333';
-        ctx.font = '11px sans-serif';
-        ctx.textAlign = 'right';
-        ctx.fillText(data[i].k, padL - 6, y + barH / 2 + 4);
-
-        ctx.fillStyle = '#666';
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(data[i].c.toString(), padL + bw + 6, y + barH / 2 + 4);
-      }
-    }).catch(function(){});
+    var d = DATA.keywords.slice().reverse();
+    var maxV = 0;
+    for (var i = 0; i < d.length; i++) { if (d[i].c > maxV) maxV = d[i].c; }
+    this.drawHBar('chartKeyword', d, 'k', 'c', 130, maxV);
   }
 });

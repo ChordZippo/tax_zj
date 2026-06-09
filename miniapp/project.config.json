@@ -47,7 +47,7 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.6.0",
+  "libVersion": "3.16.1",
   "appid": "wx52e1848182301339",
   "projectname": "税案通报大数据分析",
   "condition": {},

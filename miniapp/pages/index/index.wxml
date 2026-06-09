@@ -17,16 +17,16 @@
       <text class="section-title">📈 年度曝光趋势</text>
       <text class="section-badge">2022峰值623条</text>
     </view>
-    <canvas class="chart-canvas" canvas-id="chartYearly" type="2d"></canvas>
+    <canvas canvas-id="chartYearly" class="chart-canvas"></canvas>
   </view>
 
   <view class="section">
     <view class="section-header">
-      <text class="section-title">🗓 月度发稿节奏（可左右滑动）</text>
+      <text class="section-title">🗓 月度发稿节奏</text>
       <text class="section-badge">37个月</text>
     </view>
     <scroll-view scroll-x class="chart-scroll">
-      <canvas class="chart-canvas-wide" canvas-id="chartMonthly" type="2d"></canvas>
+      <canvas canvas-id="chartMonthly" class="chart-canvas-wide"></canvas>
     </scroll-view>
   </view>
 
@@ -35,13 +35,13 @@
       <view class="section-header">
         <text class="section-title">🥧 案件类型</text>
       </view>
-      <canvas class="chart-canvas-half" canvas-id="chartType" type="2d"></canvas>
+      <canvas canvas-id="chartType" class="chart-canvas-half"></canvas>
     </view>
     <view class="section half">
       <view class="section-header">
         <text class="section-title">🌏 省份Top10</text>
       </view>
-      <canvas class="chart-canvas-half" canvas-id="chartProvince" type="2d"></canvas>
+      <canvas canvas-id="chartProvince" class="chart-canvas-half"></canvas>
     </view>
   </view>
 
@@ -50,14 +50,14 @@
       <text class="section-title">📅 每日分布（潮汐效应）</text>
       <text class="section-badge">26-28日高峰</text>
     </view>
-    <canvas class="chart-canvas" canvas-id="chartDay" type="2d"></canvas>
+    <canvas canvas-id="chartDay" class="chart-canvas"></canvas>
   </view>
 
   <view class="section">
     <view class="section-header">
       <text class="section-title">📋 关键词频率 Top 10</text>
     </view>
-    <canvas class="chart-canvas" canvas-id="chartKeyword" type="2d"></canvas>
+    <canvas canvas-id="chartKeyword" class="chart-canvas"></canvas>
   </view>
 
   <view class="section">
