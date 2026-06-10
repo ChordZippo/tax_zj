@@ -234,7 +234,7 @@
     <header class="dashboard-header">
         <div>
             <h1>📊 税案通报大数据仪表盘 <span>v1.0</span></h1>
-            <div class="subtitle">数据来源：国家税务总局 · chinatax.gov.cn · 2021—2026 · 共 528 条记录（去重后）</div>
+            <div class="subtitle">数据来源：国家税务总局 · chinatax.gov.cn · 2021—2026 · 共 320 条独立案件</div>
         </div>
         <div class="filters">
             <div class="filter-group">
@@ -330,26 +330,26 @@ const COLORS = ['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA
 
 // ====== DATA ======
 const RAW_DATA = [
-    {year:2021,count:5},{year:2022,count:137},{year:2023,count:94},{year:2024,count:39},{year:2025,count:142},{year:2026,count:111},
+    {year:2021,count:3},{year:2022,count:107},{year:2023,count:31},{year:2024,count:19},{year:2025,count:92},{year:2026,count:68},
 ];
 const MONTHLY_DATA = [
-    {ym:'21-11',count:2},{ym:'21-12',count:3},{ym:'22-01',count:7},{ym:'22-02',count:5},{ym:'22-03',count:4},{ym:'22-04',count:1},{ym:'22-05',count:21},{ym:'22-06',count:41},{ym:'22-07',count:33},{ym:'22-08',count:15},{ym:'22-09',count:5},{ym:'22-11',count:5},{ym:'23-01',count:11},{ym:'23-02',count:4},{ym:'23-03',count:6},{ym:'23-04',count:12},{ym:'23-05',count:6},{ym:'23-06',count:12},{ym:'23-07',count:11},{ym:'23-08',count:4},{ym:'23-09',count:16},{ym:'23-10',count:7},{ym:'23-11',count:5},{ym:'24-01',count:7},{ym:'24-02',count:6},{ym:'24-04',count:5},{ym:'24-05',count:5},{ym:'24-10',count:5},{ym:'24-11',count:7},{ym:'24-12',count:4},{ym:'25-01',count:5},{ym:'25-02',count:6},{ym:'25-04',count:14},{ym:'25-05',count:6},{ym:'25-06',count:5},{ym:'25-07',count:16},{ym:'25-08',count:8},{ym:'25-09',count:23},{ym:'25-10',count:4},{ym:'25-11',count:40},{ym:'25-12',count:15},{ym:'26-01',count:16},{ym:'26-02',count:16},{ym:'26-04',count:52},{ym:'26-05',count:18},{ym:'26-06',count:9},
+    {ym:'21-11',count:1},{ym:'21-12',count:2},{ym:'22-01',count:2},{ym:'22-02',count:3},{ym:'22-03',count:2},{ym:'22-04',count:1},{ym:'22-05',count:20},{ym:'22-06',count:33},{ym:'22-07',count:29},{ym:'22-08',count:13},{ym:'22-09',count:2},{ym:'22-11',count:2},{ym:'23-01',count:2},{ym:'23-02',count:2},{ym:'23-03',count:1},{ym:'23-04',count:5},{ym:'23-05',count:1},{ym:'23-06',count:3},{ym:'23-07',count:5},{ym:'23-08',count:1},{ym:'23-09',count:8},{ym:'23-10',count:1},{ym:'23-11',count:2},{ym:'24-01',count:3},{ym:'24-02',count:3},{ym:'24-04',count:2},{ym:'24-05',count:1},{ym:'24-10',count:2},{ym:'24-11',count:5},{ym:'24-12',count:3},{ym:'25-01',count:2},{ym:'25-02',count:5},{ym:'25-04',count:9},{ym:'25-05',count:4},{ym:'25-06',count:3},{ym:'25-07',count:10},{ym:'25-08',count:4},{ym:'25-09',count:14},{ym:'25-10',count:3},{ym:'25-11',count:28},{ym:'25-12',count:10},{ym:'26-01',count:14},{ym:'26-02',count:9},{ym:'26-04',count:30},{ym:'26-05',count:9},{ym:'26-06',count:6},
 ];
 const DAY_DATA = [];
 for(let d=1;d<=31;d++) DAY_DATA.push({day:d, count:0});
-const dayCounts = {1:24,2:3,3:3,4:27,5:15,6:16,7:8,8:15,9:15,10:18,11:4,12:10,13:12,14:12,15:22,16:17,17:44,18:8,19:22,20:7,21:7,22:30,23:3,24:3,25:19,26:42,27:18,28:53,29:23,30:13,31:15};
+const dayCounts = {1:14,2:3,3:3,4:17,5:10,6:11,7:5,8:14,9:10,10:12,11:4,12:6,13:7,14:8,15:14,16:9,17:26,18:6,19:16,20:5,21:4,22:15,23:3,24:3,25:11,26:19,27:9,28:28,29:14,30:10,31:4};
 DAY_DATA.forEach(d => { d.count = dayCounts[d.day] || 0; });
 
 const TYPE_DATA = [
-    {type:'一般偷逃税',count:163},{type:'骗取留抵退税',count:115},{type:'虚开发票',count:87},{type:'私户收款',count:31},{type:'骗取出口退税',count:27},{type:'个人所得税',count:25},{type:'消费税偷逃',count:17},{type:'骗享税费优惠',count:10},{type:'涉税中介',count:9},{type:'加油站',count:2},
+    {type:'一般偷逃税',count:103},{type:'骗取留抵退税',count:100},{type:'虚开发票',count:45},{type:'私户收款',count:18},{type:'骗取出口退税',count:9},{type:'消费税偷逃',count:9},{type:'骗享税费优惠',count:8},{type:'个人所得税',count:4},
 ];
 const PROVINCE_DATA = [
-    {province:'重庆',count:24},{province:'辽宁',count:22},{province:'上海',count:18},{province:'贵州',count:17},{province:'湖南',count:16},{province:'北京',count:16},{province:'浙江',count:15},{province:'安徽',count:14},{province:'海南',count:13},{province:'天津',count:12},{province:'广东',count:12},{province:'江苏',count:12},{province:'河北',count:12},{province:'四川',count:11},{province:'陕西',count:11},
+    {province:'重庆',count:17},{province:'辽宁',count:14},{province:'上海',count:11},{province:'海南',count:11},{province:'贵州',count:9},{province:'北京',count:9},{province:'广西',count:9},{province:'湖南',count:8},{province:'天津',count:8},{province:'浙江',count:8},{province:'安徽',count:7},{province:'陕西',count:7},{province:'广东',count:7},{province:'四川',count:7},{province:'河北',count:7},
 ];
 const KEYWORD_DATA = [
-    {kw:'骗取留抵退税',count:115},{kw:'虚开发票',count:87},{kw:'私户收款',count:31},{kw:'骗取出口退税',count:27},{kw:'个人所得税',count:25},{kw:'消费税偷逃',count:17},{kw:'骗享税费优惠',count:10},{kw:'涉税中介',count:9},{kw:'加油站',count:2},{kw:'阴阳合同',count:1},
+    {kw:'骗取留抵退税',count:100},{kw:'虚开发票',count:45},{kw:'私户收款',count:18},{kw:'消费税逃',count:9},{kw:'骗享优惠',count:8},{kw:'隐匿收入',count:8},{kw:'骗取出口退税',count:9},{kw:'个人所得税',count:4},{kw:'拆分经营',count:4},{kw:'阴阳合同',count:1},
 ];
-const ARTICLE_TYPES = {enforcement:356, reveal:103, news:0, other:69};
+const ARTICLE_TYPES = {enforcement:205, reveal:91, news:0, other:24};
 
 const RECENT_CASES = [
     {date:'2026-06-05',title:'税务部门曝光5起高收入自然人偷逃个人所得税案件',type:'个人所得税'},
@@ -479,18 +479,18 @@ class Dashboard {
     }
 
     renderKPIs() {
-        document.getElementById('kpi-total').textContent = '528';
-        document.getElementById('kpi-total-sub').textContent = '2021 — 2026（去重）';
-        document.getElementById('kpi-monthly').textContent = '9.8';
-        document.getElementById('kpi-monthly-sub').textContent = '条/月（去重）';
+        document.getElementById('kpi-total').textContent = '320';
+        document.getElementById('kpi-total-sub').textContent = '2021 — 2026（独立案件）';
+        document.getElementById('kpi-monthly').textContent = '5.9';
+        document.getElementById('kpi-monthly-sub').textContent = '条/月';
         document.getElementById('kpi-provinces').textContent = '31';
         document.getElementById('kpi-provinces-sub').textContent = '省/自治区/直辖市';
-        document.getElementById('kpi-peak').textContent = '52';
-        document.getElementById('kpi-peak-sub').textContent = '2026年4月';
-        document.getElementById('kpi-enforcement').textContent = '356';
-        document.getElementById('kpi-enforcement-sub').textContent = '占67.4% · 执法通报';
-        document.getElementById('kpi-reveal').textContent = '103';
-        document.getElementById('kpi-reveal-sub').textContent = '占19.5% · 深度揭秘';
+        document.getElementById('kpi-peak').textContent = '33';
+        document.getElementById('kpi-peak-sub').textContent = '2022年6月';
+        document.getElementById('kpi-enforcement').textContent = '205';
+        document.getElementById('kpi-enforcement-sub').textContent = '占64% · 执法通报';
+        document.getElementById('kpi-reveal').textContent = '91';
+        document.getElementById('kpi-reveal-sub').textContent = '占28% · 深度揭秘';
     }
 
     formatNum(v) { if (v >= 1000) return (v/1000).toFixed(1)+'K'; return v.toString(); }
