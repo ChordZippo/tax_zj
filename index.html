@@ -14,9 +14,9 @@
             --text-secondary: #6c757d;
             --text-on-dark: #ffffff;
             --color-1: #4C72B0;
-            --color-2: #DD8433;
+            --color-2: #DD8441;
             --color-3: #55A868;
-            --color-4: #C44E33;
+            --color-4: #C44E41;
             --color-5: #8172B3;
             --color-6: #937860;
             --color-7: #DA8BC3;
@@ -194,7 +194,7 @@
         }
         .tag-blue { background: #e8f0fe; color: #1967d2; }
         .tag-red { background: #fce8e6; color: #d93025; }
-        .tag-green { background: #e6f4ea; color: #137333; }
+        .tag-green { background: #e6f4ea; color: #137413; }
         .tag-orange { background: #fef7e0; color: #e37400; }
         .tag-purple { background: #f3e8fd; color: #7b1fa2; }
         .tag-gray { background: #f1f3f4; color: #5f6368; }
@@ -234,7 +234,7 @@
     <header class="dashboard-header">
         <div>
             <h1>📊 税案通报大数据仪表盘 <span>v1.0</span></h1>
-            <div class="subtitle">数据来源：国家税务总局 · 2021—2026 · 共 297 条独立案件（保留有金额、多维度记录）</div>
+            <div class="subtitle">数据来源：国家税务总局 · 2021—2026 · 共 439 条独立案件（保留有金额、多维度记录）</div>
         </div>
         <div class="filters">
             <div class="filter-group">
@@ -321,27 +321,27 @@
 
     <footer class="footer">
         数据来源：<a href="https://www.chinatax.gov.cn/chinatax/n810219/c102025/common_listwyc.html" target="_blank">国家税务总局 · 税案通报</a> ·
-        数据采集：2026-06-09 · 去重后297条 · GitHub: <a href="https://github.com/ChordZippo/tax_zj" target="_blank">ChordZippo/tax_zj</a>
+        数据采集：2026-06-09 · 去重后439条 · GitHub: <a href="https://github.com/ChordZippo/tax_zj" target="_blank">ChordZippo/tax_zj</a>
     </footer>
 </div>
 
 <script>
-const COLORS = ['#4C72B0','#DD8433','#55A868','#C44E33','#8172B3','#937860','#DA8BC3','#8C8C8C','#4C72B0','#DD8433'];
+const COLORS = ['#4C72B0','#DD8441','#55A868','#C44E41','#8172B3','#937860','#DA8BC3','#8C8C8C','#4C72B0','#DD8441'];
 
 // ====== DATA ======
 const RAW_DATA = [
-    {year:2021,count:3},{year:2022,count:88},{year:2023,count:31},{year:2024,count:19},{year:2025,count:90},{year:2026,count:66},
+    {year:2021,count:3},{year:2022,count:129},{year:2023,count:53},{year:2024,count:28},{year:2025,count:129},{year:2026,count:97},
 ];
 const MONTHLY_DATA = [
-    {ym:'21-11',count:1},{ym:'21-12',count:2},{ym:'22-01',count:2},{ym:'22-02',count:3},{ym:'22-03',count:2},{ym:'22-05',count:15},{ym:'22-06',count:24},{ym:'22-07',count:25},{ym:'22-08',count:13},{ym:'22-09',count:2},{ym:'22-11',count:2},{ym:'23-01',count:2},{ym:'23-02',count:2},{ym:'23-03',count:1},{ym:'23-04',count:5},{ym:'23-05',count:1},{ym:'23-06',count:3},{ym:'23-07',count:5},{ym:'23-08',count:1},{ym:'23-09',count:8},{ym:'23-10',count:1},{ym:'23-11',count:2},{ym:'24-01',count:3},{ym:'24-02',count:3},{ym:'24-04',count:2},{ym:'24-05',count:1},{ym:'24-10',count:2},{ym:'24-11',count:5},{ym:'24-12',count:3},{ym:'25-01',count:2},{ym:'25-02',count:5},{ym:'25-04',count:8},{ym:'25-05',count:4},{ym:'25-06',count:3},{ym:'25-07',count:10},{ym:'25-08',count:4},{ym:'25-09',count:14},{ym:'25-10',count:3},{ym:'25-11',count:27},{ym:'25-12',count:10},{ym:'26-01',count:14},{ym:'26-02',count:8},{ym:'26-04',count:30},{ym:'26-05',count:9},{ym:'26-06',count:5},
+    {ym:'21-11',count:1},{ym:'21-12',count:2},{ym:'22-01',count:3},{ym:'22-02',count:3},{ym:'22-03',count:2},{ym:'22-04',count:1},{ym:'22-05',count:24},{ym:'22-06',count:41},{ym:'22-07',count:34},{ym:'22-08',count:17},{ym:'22-09',count:2},{ym:'22-11',count:2},{ym:'23-01',count:3},{ym:'23-02',count:3},{ym:'23-03',count:3},{ym:'23-04',count:8},{ym:'23-05',count:3},{ym:'23-06',count:6},{ym:'23-07',count:8},{ym:'23-08',count:2},{ym:'23-09',count:12},{ym:'23-10',count:2},{ym:'23-11',count:3},{ym:'24-01',count:4},{ym:'24-02',count:4},{ym:'24-04',count:3},{ym:'24-05',count:3},{ym:'24-10',count:4},{ym:'24-11',count:6},{ym:'24-12',count:4},{ym:'25-01',count:3},{ym:'25-02',count:6},{ym:'25-04',count:14},{ym:'25-05',count:5},{ym:'25-06',count:5},{ym:'25-07',count:14},{ym:'25-08',count:7},{ym:'25-09',count:21},{ym:'25-10',count:7},{ym:'25-11',count:36},{ym:'25-12',count:11},{ym:'26-01',count:17},{ym:'26-02',count:15},{ym:'26-04',count:39},{ym:'26-05',count:14},{ym:'26-06',count:12},
 ];
 const DAY_DATA = [];
 for(let d=1;d<=31;d++) DAY_DATA.push({day:d, count:0});
-const dayCounts = {1:11,2:3,3:3,4:16,5:10,6:10,7:4,8:14,9:8,10:11,11:4,12:5,13:7,14:7,15:14,16:8,17:25,18:5,19:15,20:5,21:4,22:14,23:2,24:3,25:10,26:17,27:8,28:26,29:13,30:9,31:4};
+const dayCounts = {1:15,2:14,3:16,4:23,5:20,6:12,7:14,8:21,9:18,10:15,11:9,12:12,13:14,14:15,15:23,16:18,17:37,18:12,19:18,20:12,21:9,22:23,23:9,24:10,25:19,26:30,27:12,28:33,29:18,30:17,31:9};
 DAY_DATA.forEach(d => { d.count = dayCounts[d.day] || 0; });
 
 const TYPE_DATA = [
-    {type:'一般偷逃税',count:100},{type:'骗取留抵退税',count:93},{type:'虚开发票',count:43},{type:'私户收款',count:18},{type:'骗取出口退税',count:9},{type:'消费税偷逃',count:9},{type:'骗享税费优惠',count:7},{type:'个人所得税',count:4},
+    {type:'执法通报',count:298},{type:'深度揭秘',count:72},{type:'其他',count:61},{type:'综合新闻',count:8},
 ];
 const PROVINCE_DATA = [
     {province:'重庆',count:16},{province:'辽宁',count:13},{province:'上海',count:11},{province:'海南',count:11},{province:'贵州',count:9},{province:'北京',count:9},{province:'广西',count:9},{province:'湖南',count:8},{province:'天津',count:8},{province:'浙江',count:8},
@@ -349,7 +349,7 @@ const PROVINCE_DATA = [
 const KEYWORD_DATA = [
     {kw:'骗取留抵退税',count:93},{kw:'虚开发票',count:43},{kw:'私户收款',count:18},{kw:'消费税',count:9},{kw:'骗享优惠',count:7},{kw:'个人所得税',count:4},
 ];
-const ARTICLE_TYPES = {enforcement:188, reveal:90, news:0, other:19};
+const ARTICLE_TYPES = {enforcement:298, reveal:72, news:8, other:61};
 
 const RECENT_CASES = [
     {date:'2026-06-05',title:'税务部门曝光5起高收入自然人偷逃个人所得税案件',type:'个人所得税'},
@@ -387,7 +387,7 @@ const RECENT_CASES = [
     {date:'2026-04-29',title:'"免税"做幌 "私账"收款——北京邦定美容整形',type:'医疗美容'},
     {date:'2026-04-29',title:'藏不住的偷税账——保定华美整形美容医院',type:'医疗美容'},
     {date:'2026-04-29',title:'"账外账"里的千万营收——广州氧颜医疗美容',type:'医疗美容'},
-    {date:'2026-04-28',title:'税务部门依法查处"探店"网红白冰偷税 税款1890万元',type:'网络主播'},
+    {date:'2026-04-28',title:'税务部门依法查处"探店"网红白冰偷税 税款1872万元',type:'网络主播'},
     {date:'2026-04-27',title:'退税"馅饼"实为"陷阱" 近1800人上当——咸阳虚假填报个税',type:'个人所得税'},
     {date:'2026-04-17',title:'税务部门曝光8起偷逃消费税案件（珠宝/白酒/成品油）',type:'消费税'},
     {date:'2026-04-17',title:'"绕行"万里偷逃消费税——辽宁潮尊珠宝',type:'消费税'},
@@ -481,16 +481,16 @@ class Dashboard {
     renderKPIs() {
         document.getElementById('kpi-total').textContent = '320';
         document.getElementById('kpi-total-sub').textContent = '2021—2026（独立案件）';
-        document.getElementById('kpi-monthly').textContent = '5.5';
+        document.getElementById('kpi-monthly').textContent = '8.1';
         document.getElementById('kpi-monthly-sub').textContent = '条/月';
         document.getElementById('kpi-provinces').textContent = '31';
         document.getElementById('kpi-provinces-sub').textContent = '省/自治区/直辖市';
-        document.getElementById('kpi-peak').textContent = '33';
-        document.getElementById('kpi-peak-sub').textContent = '2022年7月';
-        document.getElementById('kpi-enforcement').textContent = '188';
-        document.getElementById('kpi-enforcement-sub').textContent = '占63% · 执法通报';
-        document.getElementById('kpi-reveal').textContent = '90';
-        document.getElementById('kpi-reveal-sub').textContent = '占30% · 深度揭秘';
+        document.getElementById('kpi-peak').textContent = '41';
+        document.getElementById('kpi-peak-sub').textContent = '2022年6月';
+        document.getElementById('kpi-enforcement').textContent = '298';
+        document.getElementById('kpi-enforcement-sub').textContent = '占68% · 执法通报';
+        document.getElementById('kpi-reveal').textContent = '72';
+        document.getElementById('kpi-reveal-sub').textContent = '占16% · 深度揭秘';
     }
 
     formatNum(v) { if (v >= 1000) return (v/1000).toFixed(1)+'K'; return v.toString(); }
@@ -504,8 +504,8 @@ class Dashboard {
                 datasets: [{
                     label: '发稿量',
                     data: RAW_DATA.map(d => d.count),
-                    backgroundColor: RAW_DATA.map(d => d.count > 100 ? '#C44E33CC' : '#4C72B0CC'),
-                    borderColor: RAW_DATA.map(d => d.count > 100 ? '#C44E33' : '#4C72B0'),
+                    backgroundColor: RAW_DATA.map(d => d.count > 100 ? '#C44E41CC' : '#4C72B0CC'),
+                    borderColor: RAW_DATA.map(d => d.count > 100 ? '#C44E41' : '#4C72B0'),
                     borderWidth: 1, borderRadius: 4,
                 }]
             },
@@ -611,8 +611,8 @@ class Dashboard {
                 labels: DAY_DATA.map(d => d.day+'日'),
                 datasets: [{
                     data: DAY_DATA.map(d => d.count),
-                    backgroundColor: DAY_DATA.map(d => d.day >= 21 ? '#C44E33AA' : '#4C72B0AA'),
-                    borderColor: DAY_DATA.map(d => d.day >= 21 ? '#C44E33' : '#4C72B0'),
+                    backgroundColor: DAY_DATA.map(d => d.day >= 21 ? '#C44E41AA' : '#4C72B0AA'),
+                    borderColor: DAY_DATA.map(d => d.day >= 21 ? '#C44E41' : '#4C72B0'),
                     borderWidth: 1, borderRadius: 2,
                 }]
             },
@@ -638,8 +638,8 @@ class Dashboard {
                 labels: kwLabels,
                 datasets: [{
                     data: kwCounts,
-                    backgroundColor: kwCounts.map((c,i) => i < 3 ? '#C44E33CC' : '#4C72B0CC'),
-                    borderColor: kwCounts.map((c,i) => i < 3 ? '#C44E33' : '#4C72B0'),
+                    backgroundColor: kwCounts.map((c,i) => i < 3 ? '#C44E41CC' : '#4C72B0CC'),
+                    borderColor: kwCounts.map((c,i) => i < 3 ? '#C44E41' : '#4C72B0'),
                     borderWidth: 1, borderRadius: 3,
                 }]
             },
