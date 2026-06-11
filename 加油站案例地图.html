@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加油站偷税案例地图</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:#0d1b2a;color:#fff}
+.header{background:linear-gradient(135deg,#0d1b2a,#1b3a5c);padding:20px 28px;border-bottom:1px solid rgba(255,255,255,.1)}
+.header h1{font-size:22px} .header .sub{font-size:13px;opacity:.6;margin-top:4px}
+#map{width:100%;height:calc(100vh - 100px)}
+.legend{background:rgba(13,27,42,.9);padding:14px 18px;border-radius:8px;font-size:13px;line-height:2;min-width:150px}
+.legend i{width:14px;height:14px;display:inline-block;border-radius:50%;margin-right:8px;vertical-align:middle}
+.leaflet-popup-content-wrapper{border-radius:8px;font-size:13px;line-height:1.6}
+.leaflet-popup-content b{color:#1a1a2e}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>⛽ 全国加油站偷税案例分布</h1>
+<div class="sub">21 个案例 · 数据来源：国家税务总局税案通报 · 2021—2026</div>
+</div>
+<div id="map"></div>
+
+<script>
+var map = L.map('map').setView([33, 113], 5);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap',
+  maxZoom: 18
+}).addTo(map);
+
+var markers = [{lat:35.5,lng:112.85,method:'私户收款',color:'#d93025',popup:'<b>山西晋城</b><br>2026-05-22<br>泽州县郊南加油站隐匿收入偷税<br>手法: 私户收款<br>金额: 174.20万'},
+{lat:21.66,lng:110.93,method:'消费税',color:'#137333',popup:'<b>广东</b><br>2026-04-17<br>茂名市宏坚石化有限公司偷逃消费税<br>手法: 消费税<br>金额: 227.32万'},
+{lat:40.19,lng:117.97,method:'骗留抵退税',color:'#1967d2',popup:'<b>河北唐山</b><br>2025-11-17<br>遵化市千里行加油加气站骗取留抵退税<br>手法: 骗留抵退税'},
+{lat:44.53,lng:125.7,method:'作弊主板',color:'#e37400',popup:'<b>吉林长春</b><br>2025-09-28<br>德惠市天赐加油站隐匿收入偷税<br>手法: 作弊主板'},
+{lat:36.33,lng:113.23,method:'私户收款',color:'#d93025',popup:'<b>山西长治</b><br>2025-09-28<br>潞城市雨田实业加油站账外隐匿收入<br>手法: 私户收款'},
+{lat:32.51,lng:120.15,method:'私户收款',color:'#d93025',popup:'<b>江苏泰州</b><br>2025-09-28<br>泰州市姜堰区胜利加油站隐匿收入<br>手法: 私户收款'},
+{lat:29.71,lng:115.99,method:'私户收款',color:'#d93025',popup:'<b>江西九江</b><br>2025-09-28<br>九江市浔西能源经开区加油站偷税<br>手法: 私户收款'},
+{lat:22.77,lng:111.57,method:'作弊主板',color:'#e37400',popup:'<b>广东云浮</b><br>2025-02-10<br>罗定市大众石油经营有限公司偷逃税<br>手法: 作弊主板'},
+{lat:39.86,lng:79.13,method:'作弊主板',color:'#e37400',popup:'<b>新疆</b><br>2025-02-10<br>图木舒克东城迎宾加油加气站作弊主板<br>手法: 作弊主板'},
+{lat:24.05,lng:104.19,method:'私户收款',color:'#d93025',popup:'<b>云南文山</b><br>2025-02-10<br>丘北县树皮岔路加油站隐匿收入<br>手法: 私户收款'},
+{lat:35.9,lng:114.3,method:'私户收款',color:'#d93025',popup:'<b>河南鹤壁</b><br>2024-10-17<br>河南省一起加油站偷税案件<br>手法: 私户收款'},
+{lat:22.65,lng:110.16,method:'私户收款',color:'#d93025',popup:'<b>广西玉林</b><br>2024-05-31<br>广西一起加油站偷税案件<br>手法: 私户收款'},
+{lat:26.65,lng:106.63,method:'私户收款',color:'#d93025',popup:'<b>贵州</b><br>2024-02-29<br>贵州省一起加油站偷税案件<br>手法: 私户收款'},
+{lat:36.07,lng:118.38,method:'消费税',color:'#137333',popup:'<b>山东</b><br>2024-01-12<br>山东成品油生产企业偷税<br>手法: 消费税<br>金额: 25200.00万'},
+{lat:36.07,lng:120.38,method:'私户收款',color:'#d93025',popup:'<b>山东青岛</b><br>2023-07-28<br>青岛一起加油站偷税案件<br>手法: 私户收款'},
+{lat:41.27,lng:123.24,method:'私户收款',color:'#d93025',popup:'<b>辽宁辽阳</b><br>2023-06-28<br>辽宁辽阳一起加油站偷税案件<br>手法: 私户收款'},
+{lat:29.87,lng:121.54,method:'私户收款',color:'#d93025',popup:'<b>浙江宁波</b><br>2023-06-28<br>宁波一起加油站偷税案件<br>手法: 私户收款'},
+{lat:38.3,lng:116.85,method:'私户收款',color:'#d93025',popup:'<b>河北沧州</b><br>2023-04-26<br>河北沧州一起加油站偷税案件<br>手法: 私户收款'},
+{lat:39.13,lng:117.2,method:'虚开发票',color:'#7b1fa2',popup:'<b>天津</b><br>2023-03-16<br>天津一起加油站虚开增值税发票<br>手法: 虚开发票'},
+{lat:28.66,lng:121.42,method:'私户收款',color:'#d93025',popup:'<b>浙江台州</b><br>2023-03-16<br>浙江台州一起加油站偷税案件<br>手法: 私户收款'},
+{lat:28.55,lng:112.36,method:'私户收款',color:'#d93025',popup:'<b>湖南益阳</b><br>2023-01-31<br>湖南益阳一起加油站偷税案件<br>手法: 私户收款'}];
+
+markers.forEach(function(m) {
+  var icon = L.divIcon({
+    className: '',
+    html: '<div style="width:20px;height:20px;background:'+m.color+';border:3px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>',
+    iconSize: [20,20],
+    iconAnchor: [10,10]
+  });
+  L.marker([m.lat, m.lng], {icon:icon})
+    .addTo(map)
+    .bindPopup(m.popup);
+});
+
+// Legend
+var legend = L.control({position:'bottomright'});
+legend.onAdd = function() {
+  var div = L.DomUtil.create('div', 'legend');
+  var types = {'私户收款':'#d93025','作弊主板':'#e37400','骗留抵退税':'#1967d2','消费税':'#137333','虚开发票':'#7b1fa2'};
+  div.innerHTML = '<b>🔍 违法手法</b><br>';
+  for (var k in types) {
+    div.innerHTML += '<i style="background:'+types[k]+'"></i>' + k + '<br>';
+  }
+  return div;
+};
+legend.addTo(map);
+
+// Fit bounds
+if (markers.length > 0) {
+  var group = L.featureGroup(markers.map(function(m) {
+    return L.marker([m.lat, m.lng]);
+  }));
+  map.fitBounds(group.getBounds().pad(0.15));
+}
+</script>
+</body>
+</html>
