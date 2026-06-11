@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加油站偷税专题分析</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.5}
+.container{max-width:1200px;margin:0 auto;padding:16px}
+.header{background:linear-gradient(135deg,#1a1a2e,#c44e52);color:#fff;padding:24px 28px;border-radius:10px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.header h1{font-size:24px;font-weight:700}
+.header .sub{font-size:13px;opacity:.7;margin-top:4px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi-card{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #c44e52}
+.kpi-card:nth-child(1){border-left-color:#c44e52}
+.kpi-card:nth-child(2){border-left-color:#dd8452}
+.kpi-card:nth-child(3){border-left-color:#55a868}
+.kpi-card:nth-child(4){border-left-color:#4c72b0}
+.kpi-card:nth-child(5){border-left-color:#8172b3}
+.kpi-label{font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.3px}
+.kpi-value{font-size:26px;font-weight:700}
+.section{background:#fff;border-radius:10px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.section h3{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.badge{font-size:11px;background:#e9ecef;padding:2px 10px;border-radius:10px;color:#666;font-weight:400}
+canvas{max-height:300px;width:100%!important}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;border-bottom:2px solid #dee2e6;color:#6c757d;font-size:11px;text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#333;background:#f8f9fa}
+td{padding:8px 10px;border-bottom:1px solid #f0f0f0}
+tr:hover{background:#f8f9fa}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;margin-right:6px}
+.tag-red{background:#fce8e6;color:#d93025}
+.tag-blue{background:#e8f0fe;color:#1967d2}
+.tag-green{background:#e6f4ea;color:#137333}
+.tag-orange{background:#fef7e0;color:#e37400}
+.footer{text-align:center;font-size:12px;color:#6c757d;padding:20px 0}
+@media(max-width:768px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>⛽ 加油站偷税专题分析</h1>
+<div class="sub">国家税务总局税案通报 · 37 条独立案件 · 2021—2026</div>
+</div>
+
+<div class="kpi-row">
+<div class="kpi-card"><div class="kpi-label">独立案件</div><div class="kpi-value">37</div></div>
+<div class="kpi-card"><div class="kpi-label">涉及省份</div><div class="kpi-value">17</div></div>
+<div class="kpi-card"><div class="kpi-label">有金额案件</div><div class="kpi-value">20</div></div>
+<div class="kpi-card"><div class="kpi-label">案均金额</div><div class="kpi-value">16518万</div></div>
+<div class="kpi-card"><div class="kpi-label">主要手法</div><div class="kpi-value">其他</div></div>
+</div>
+
+<div class="section">
+<h3>📈 年度发案趋势 <span class="badge">37条</span></h3>
+<canvas id="chartYear"></canvas>
+</div>
+
+<div class="section">
+<h3>🔧 核心违法手法 <span class="badge">7种</span></h3>
+<canvas id="chartMethod"></canvas>
+</div>
+
+<div class="section">
+<h3>🌏 地域分布 Top 10 <span class="badge">17省</span></h3>
+<canvas id="chartRegion"></canvas>
+</div>
+
+<div class="section">
+<h3>📋 全部案件明细</h3>
+<table><thead><tr><th onclick="sortT(0)">日期</th><th onclick="sortT(1)">案件名称</th><th onclick="sortT(2)">地域</th><th onclick="sortT(3)">金额(万)</th></tr></thead>
+<tbody id="tbody">
+<tr><td style="white-space:nowrap">2026-05-22</td><td><span class="tag tag-red">私户收款</span> 私户收款藏猫腻 “隐身”油款终现形——揭开泽州县郊南加油站隐匿收入偷税真相</td><td>山西</td><td></td></tr>
+<tr><td style="white-space:nowrap">2026-05-22</td><td><span class="tag tag-green">其他</span> 国家税务总局晋城市税务局稽查局依法查处泽州县郊南加油站偷税案件</td><td>山西</td><td>112</td></tr>
+<tr><td style="white-space:nowrap">2026-04-27</td><td><span class="tag tag-orange">消费税逃逸</span> 税务部门曝光8起偷逃贵重首饰及珠宝玉石、白酒、成品油等消费税案件</td><td></td><td></td></tr>
+<tr><td style="white-space:nowrap">2026-04-17</td><td><span class="tag tag-orange">消费税逃逸</span> 多起偷逃贵重首饰及珠宝玉石、白酒、成品油等消费税案件被查处！警示税法红线不容触碰</td><td></td><td></td></tr>
+<tr><td style="white-space:nowrap">2026-04-17</td><td><span class="tag tag-orange">消费税逃逸</span> 石化经销企业暗藏的油品“调和术”——还原茂名市宏坚石化有限公司偷逃消费税案件真相</td><td>广东</td><td></td></tr>
+<tr><td style="white-space:nowrap">2026-04-17</td><td><span class="tag tag-orange">消费税逃逸</span> 国家税务总局茂名市税务局稽查局依法查处茂名市宏坚石化有限公司偷逃消费税案件</td><td>广东</td><td>227</td></tr>
+<tr><td style="white-space:nowrap">2025-11-17</td><td><span class="tag tag-red">私户收款</span> 扫码支付藏“私”账 骗享退税终被罚——还原遵化市千里行加油加气站骗取增值税留抵退税案件真相</td><td>河北</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-11-17</td><td><span class="tag tag-blue">骗留抵退税</span> 国家税务总局唐山市税务局稽查局依法查处遵化市千里行加油加气站骗取增值税留抵退税案件</td><td>河北</td><td>224</td></tr>
+<tr><td style="white-space:nowrap">2025-10-15</td><td><span class="tag tag-blue">隐匿收入</span> 税务部门再曝光6起加油站偷税案件 依法查处隐匿收入偷税行为 坚决维护税收法治公平</td><td></td><td>294300</td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-green">其他</span> 6起加油站偷税案被曝光！守住法律底线  合规才是发展正道</td><td></td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-blue">隐匿收入</span> 加油收款“套路深”监控系统“藏猫腻”——还原德惠市天赐加油站隐匿收入偷税案件真相</td><td>吉林</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-green">其他</span> 国家税务总局长春市税务局第一稽查局依法查处德惠市天赐加油站偷税案件</td><td>吉林</td><td>1431</td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-blue">隐匿收入</span> 七个账户轮流收款 高库存疑点终被查——潞城市雨田实业有限责任公司第一加油站账外隐匿收入偷税被查处</td><td>山西长治</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-green">其他</span> 国家税务总局长治市税务局稽查局依法查处潞城市雨田实业有限责任公司第一加油站偷税案件</td><td>山西长治</td><td>662</td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-red">私户收款</span> “个人账户”巧变“藏钱罐”“移花接木”终被查——揭开泰州市姜堰区胜利加油站隐匿收入偷税真相</td><td>江苏</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-green">其他</span> 国家税务总局泰州市税务局第二稽查局依法查处泰州市姜堰区胜利加油站偷税案件</td><td>江苏</td><td>345</td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-green">其他</span> “消失”油款背后的“隐秘”操作——还原九江市浔西能源有限公司经开区加油站偷税真相</td><td>江西</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-09-28</td><td><span class="tag tag-green">其他</span> 国家税务总局九江市税务局第三稽查局依法查处九江市浔西能源有限公司经开区加油站偷税案件</td><td>江西</td><td>311</td></tr>
+<tr><td style="white-space:nowrap">2025-02-10</td><td><span class="tag tag-red">作弊主板系统</span> 一个油站、两套系统、多方收款偷逃税终被查——揭开罗定市大众石油经营有限公司偷逃税“神秘面具”</td><td>广东</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-02-10</td><td><span class="tag tag-green">其他</span> 国家税务总局云浮市税务局稽查局依法对罗定市大众石油经营有限公司偷税案进行处理</td><td>广东</td><td>1352</td></tr>
+<tr><td style="white-space:nowrap">2025-02-10</td><td><span class="tag tag-red">作弊主板系统</span> 主板作弊“瞒天过海” 资金溯源“真相大白”——还原图木舒克市东城迎宾加油加气站利用作弊主板偷税真相</td><td>新疆</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-02-10</td><td><span class="tag tag-green">其他</span> 国家税务总局图木舒克税务局依法对东城迎宾加油加气站偷税案进行处理</td><td>新疆</td><td>793</td></tr>
+<tr><td style="white-space:nowrap">2025-02-10</td><td><span class="tag tag-blue">隐匿收入</span> 加油员“特殊”的IC卡——云南丘北县树皮岔路加油站隐匿收入偷税终被罚</td><td>云南</td><td></td></tr>
+<tr><td style="white-space:nowrap">2025-02-10</td><td><span class="tag tag-green">其他</span> 国家税务总局文山州税务局第二稽查局依法对丘北县树皮岔路加油站偷税案进行处理</td><td>云南</td><td>427</td></tr>
+<tr><td style="white-space:nowrap">2024-10-17</td><td><span class="tag tag-green">其他</span> 河南省税务部门依法查处一起加油站偷税案件</td><td>河南</td><td>328</td></tr>
+<tr><td style="white-space:nowrap">2024-05-31</td><td><span class="tag tag-green">其他</span> 广西壮族自治区税务部门依法查处一起加油站偷税案件</td><td>广西</td><td>481</td></tr>
+<tr><td style="white-space:nowrap">2024-02-29</td><td><span class="tag tag-green">其他</span> 贵州省税务部门依法查处一起加油站偷税案件</td><td>贵州</td><td>1035</td></tr>
+<tr><td style="white-space:nowrap">2024-01-12</td><td><span class="tag tag-orange">消费税逃逸</span> 山东省税务局稽查局依法查处一起成品油生产企业偷税案件</td><td>山东</td><td>25200</td></tr>
+<tr><td style="white-space:nowrap">2023-07-28</td><td><span class="tag tag-green">其他</span> 青岛市税务局第一稽查局依法查处一起加油站偷税案件</td><td>山东</td><td>1039</td></tr>
+<tr><td style="white-space:nowrap">2023-06-28</td><td><span class="tag tag-green">其他</span> 辽宁省辽阳市税务局第二稽查局依法查处一起加油站偷税案件</td><td>辽宁</td><td>358</td></tr>
+<tr><td style="white-space:nowrap">2023-06-28</td><td><span class="tag tag-green">其他</span> 宁波市税务局第二稽查局依法查处一起加油站偷税案件</td><td>浙江</td><td></td></tr>
+<tr><td style="white-space:nowrap">2023-04-26</td><td><span class="tag tag-green">其他</span> 河北省沧州市税务局稽查局依法查处一起加油站偷税案件</td><td>河北</td><td>687</td></tr>
+<tr><td style="white-space:nowrap">2023-03-16</td><td><span class="tag tag-red">虚开发票</span> 天津市税务局第一稽查局依法查处一起加油站虚开增值税专用发票案件</td><td>天津</td><td>25</td></tr>
+<tr><td style="white-space:nowrap">2023-03-16</td><td><span class="tag tag-green">其他</span> 浙江省台州市税务局第三稽查局依法查处一起加油站偷税案件</td><td>浙江</td><td>1013</td></tr>
+<tr><td style="white-space:nowrap">2023-01-31</td><td><span class="tag tag-green">其他</span> 湖南省益阳市税务局第二稽查局依法查处一起加油站偷税案件</td><td>湖南</td><td></td></tr>
+<tr><td style="white-space:nowrap">2022-01-26</td><td><span class="tag tag-orange">消费税逃逸</span> 国家税务总局：坚决依法打击偷逃成品油消费税违法犯罪行为</td><td></td><td></td></tr>
+<tr><td style="white-space:nowrap">2022-01-19</td><td><span class="tag tag-orange">消费税逃逸</span> 辽宁省税务局稽查局依法对部分企业偷逃成品油消费税案件进行查处</td><td>辽宁</td><td></td></tr>
+
+</tbody></table>
+</div>
+
+<div class="footer">⛽ 数据来源：国家税务总局 chinatax.gov.cn · 专题制作：2026-06-11</div>
+</div>
+
+<script>
+new Chart(document.getElementById('chartYear'),{type:'bar',data:{labels:["2022","2023","2024","2025","2026"],datasets:[{data:[2,7,4,18,6],backgroundColor:[2,7,4,18,6].map(v=>v>4?'#C44E52':'#4C72B0'),borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'条'}}}}});
+
+new Chart(document.getElementById('chartMethod'),{type:'doughnut',data:{labels:["其他","消费税逃逸","隐匿收入","私户收款/POS机","作弊主板系统","骗取留抵退税","虚开发票"],datasets:[{data:[19,7,4,3,2,1,1],backgroundColor:['#C44E52CC','#DD8452CC','#55A868CC','#4C72B0CC','#8172B3CC','#937860CC','#DA8BC3CC'],borderColor:'#fff',borderWidth:2}]},options:{responsive:true,cutout:'55%',plugins:{legend:{position:'right',labels:{font:{size:11}}}}}});
+
+new Chart(document.getElementById('chartRegion'),{type:'bar',data:{labels:["广东","河北","山西","吉林","山西长治","江苏","江西","新疆","云南","山东"],datasets:[{data:[4,3,2,2,2,2,2,2,2,2],backgroundColor:['#4C72B0CC','#DD8452CC','#55A868CC','#C44E52CC','#8172B3CC','#937860CC','#DA8BC3CC','#8C8C8CCC','#4C72B0CC','#DD8452CC'],borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:v=>v+'条'}}}}});
+
+function sortT(col){var tb=document.getElementById('tbody'),rows=Array.from(tb.rows);rows.sort(function(a,b){var x=a.cells[col].textContent.trim(),y=b.cells[col].textContent.trim();if(col===0)return x<y?-1:x>y?1:0;return x.localeCompare(y,'zh')});rows.forEach(function(r){tb.appendChild(r)})}
+</script>
+</body>
+</html>
